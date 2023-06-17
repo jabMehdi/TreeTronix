@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "kafka-node": "^5.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^5.10.0",
     "no-kafka": "^3.4.3",
     "node-cron": "^2.0.3",
