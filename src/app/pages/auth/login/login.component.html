@@ -1,0 +1,57 @@
+<h1 class="title">Login</h1>
+<p class="sub-title">Hello! Log in with your email.</p>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="login-form">
+  <div class="form-control-group">
+    <label class="label" for="input-email">Email address:</label>
+    <input nbInput
+           fullWidth
+           formControlName="email"
+           class="form-control"
+           name="email"
+           id="input-email"
+           pattern=".+@.+\..+"
+           placeholder="Email address"
+           autofocus
+           [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+    >
+    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+      <div *ngIf="f.email.errors.required">Email is required</div>
+      <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+    </div>
+  </div>
+
+  <div class="form-control-group">
+    <label class="label">Password:</label>
+    <input nbInput
+           fullWidth
+           formControlName="password"
+           class="form-control"
+           type="password"
+           id="input-password"
+           placeholder="Password"
+           [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+    >
+    <p class="error-message">{{ msg }}</p>
+    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+      <div *ngIf="f.password.errors.required">Password is required</div>
+    </div>
+  </div>
+
+  <div class="form-control-group accept-group">
+    <nb-checkbox name="rememberMe">Remember me</nb-checkbox>
+    <a class="forgot-password" routerLink="../request">Forgot Password?</a>
+  </div>
+
+  <button nbButton
+          fullWidth
+          status="primary"
+          class="submit-button"
+  >
+    Log In
+  </button>
+</form>
+
+<section class="another-action" aria-label="Register">
+  Don't have an account? <a class="text-link" routerLink="../register">Register</a>
+</section>

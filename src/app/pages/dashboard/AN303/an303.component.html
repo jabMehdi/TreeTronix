@@ -1,0 +1,169 @@
+<style>
+  #test {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 40px;
+    align-self: center;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+
+  nb-progress-bar {
+    flex: 1;
+  }
+</style>
+
+<div class="row" id="test">
+
+  <nb-card size="large" *ngFor="let item of data">
+    <nb-tabset fullWidth>
+      <nb-tab tabTitle="Temperature">
+
+        <div class="slider-container">
+          <ngx-temperature-dragger [value]="item.data[item.data.length-1]?.tempValues"
+                                   (power)="temperatureOff = !$event"
+                                   [min]="temperatureData?.min"
+                                   [max]="temperatureData?.max"
+                                   [disableArcColor]="theme?.arcEmpty"
+                                   [fillColors]="theme?.arcFill" 
+                                   [thumbBg]="theme?.thumbBg"
+                                   [thumbBorderColor]="theme?.thumbBorder">
+
+            <div class="slider-value-container" [ngClass]="{ 'off': temperatureOff }">
+              <div class="value temperature h1">
+                {{ temperatureOff ? '--' : (item?.data[item?.data?.length-1]?.tempValues | ngxRound) }}
+              </div>
+              <div class="desc">
+                Celsius
+              </div>
+            </div>
+          </ngx-temperature-dragger>
+        </div>
+
+        <nb-radio-group [(ngModel)]="temperatureMode" name="temperature-mode">
+
+
+          <nb-radio value="fan">
+            <i class="nb-loop-circled">
+
+            </i>
+          </nb-radio>
+        </nb-radio-group>
+        <h4 class="text-info" style=" align-self: center;"> {{ item.name}} </h4>
+        <h5 class="text-primary" style=" align-self: center;"> In {{item?.factoryName}} ( {{item?.area}} ) </h5>
+   
+        <h6 class="text-info" style=" align-self: center;"> Voltage : {{item?.data[item?.data?.length-1]?.voltage}}  V   </h6>
+
+        <h6> Battery Level :      </h6>
+
+        <div class="container">
+          <nb-progress-bar
+            [value]="item.data[item.data.length - 1]?.batteryLevel"
+            [status]="getstatus(item.data[item.data.length - 1]?.batteryLevel)"
+            [displayValue]="true"
+          >
+          </nb-progress-bar>
+        </div>
+      &nbsp;
+        <a routerLink="../s-devices">More details</a>
+      </nb-tab>
+
+      <nb-tab tabTitle="Humidity">
+        <div class="slider-container">
+          <ngx-temperature-dragger
+          
+            [value]="item?.data[item?.data?.length - 1]?.humValues"
+            (power)="humidityOff = !$event"
+            [min]="humidityData?.min"
+            [max]="humidityData?.max"
+            [disableArcColor]="theme?.arcEmpty"
+            [fillColors]="theme?.arcFill"
+            [thumbBg]="theme?.thumbBg"
+            [thumbBorderColor]="theme?.thumbBorder"
+          >
+
+            <div class="slider-value-container" [ngClass]="{ 'off': humidityOff }">
+              <div class="value humidity h1">
+                {{ humidityOff ? '--' : (item?.data[item?.data?.length-1]?.humValues | ngxRound) }}
+              </div>
+
+            </div>
+          </ngx-temperature-dragger>
+        </div>
+
+        <nb-radio-group [(ngModel)]="humidityMode" name="humidity-mode">
+          {{item?.name}}
+          <nb-radio value="fan">
+            <i class="nb-loop-circled"></i>
+          </nb-radio>
+        </nb-radio-group>
+        <h4 class="text-info" style=" align-self: center;"> {{item?.name}} </h4>
+        <h5 class="text-primary" style=" align-self: center;"> In {{item?.factoryName}} ( {{item?.area}} ) </h5>
+        <h6 class="text-info" style=" align-self: center;"> Voltage : {{item.data[item.data.length-1]?.voltage}}  V   </h6>
+        <h6> Battery Level :      </h6>
+
+        <div class="container">
+          <nb-progress-bar
+            [value]="item?.data[item?.data?.length - 1]?.batteryLevel"
+            [status]="getstatus(item?.data[item?.data?.length - 1]?.batteryLevel)"
+            [displayValue]="true"
+          ></nb-progress-bar>
+        </div>
+        &nbsp;
+
+        <a routerLink="../s-devices">More details</a>
+      </nb-tab>
+
+
+       <!--<nb-tab tabTitle="light">
+
+        <div class="slider-container">
+          <ngx-temperature-dragger [(value)]="item.data[item.data.length-1]?.lightValues"
+                                   (power)="humidityOff = !$event"
+                                   [min]="humidityData?.min"
+                                   [max]="humidityData?.max"
+                                   [disableArcColor]="theme?.arcEmpty"
+                                   [fillColors]="theme?.arcFill" 
+                                   [thumbBg]="theme?.thumbBg"
+                                   [thumbBorderColor]="theme?.thumbBorder">
+
+            <div class="slider-value-container" [ngClass]="{ 'off': humidityOff }">
+              <div class="value humidity h1">
+                {{ humidityOff ? '--' : (item.data[item.data.length-1]?.lightValues| ngxRound) }}
+              </div>
+              <div class="desc">
+                Lux
+              </div>
+            </div>
+          </ngx-temperature-dragger>
+        </div>
+
+        <nb-radio-group [(ngModel)]="humidityMode" name="humidity-mode">
+          {{item?.name}}
+          <nb-radio value="fan">
+            <i class="nb-loop-circled"></i>
+          </nb-radio>
+        </nb-radio-group>
+        <h4 class="text-info" style=" align-self: center;"> {{item?.name}} </h4>
+        <h5 class="text-primary" style=" align-self: center;"> In {{item?.factoryName}} ( {{item?.area}} ) </h5>
+
+        <h6> Battery Level :      </h6>
+
+        <div class="container">
+          <nb-progress-bar [value]="item.data[item.data.length-1]?.batteryLevel" 
+                           [status]="getstatus(item.data[item.data.length-1]?.batteryLevel)"
+                           [displayValue]="true"></nb-progress-bar>
+        </div>
+        &nbsp;
+
+        <a routerLink="../s-devices">More details</a>
+      </nb-tab> -->
+
+
+    </nb-tabset>
+  </nb-card>
+  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+</div>

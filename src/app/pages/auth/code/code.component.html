@@ -1,0 +1,24 @@
+<h1 id='title' class='title'>Forgot Password</h1>
+<p class='sub-title'>Enter your email address and we’ll send a link to reset your password</p>
+
+<form (ngSubmit)='onSubmit()' [formGroup]='codeForm' aria-labelledby='title'>
+
+  <div class='form-control-group'>
+    <label class='label'>Enter your code:</label>
+    <input nbInput
+           formControlName='code'
+           name='code'
+           placeholder='code'
+           autofocus
+           fullWidth
+           fieldSize='medium'>
+
+
+    <button nbButton
+            fullWidth
+            status='success'
+            size='large'>
+      send code
+    </button>
+  </div>
+</form>

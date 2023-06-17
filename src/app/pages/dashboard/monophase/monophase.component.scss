@@ -1,0 +1,21 @@
+@import '../../../@theme/styles/themes';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '~bootstrap/scss/mixins/breakpoints';
+
+@include nb-install-component() {
+
+  nb-card-body {
+    overflow: hidden;
+  }
+  nb-card {
+    height: 55rem;
+  }
+
+  .value {
+    margin: 0;
+  }
+
+  .details {
+    color: nb-theme(text-hint-color);
+  }
+}

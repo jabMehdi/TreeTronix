@@ -1,0 +1,92 @@
+<style>
+  #test {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 30px;
+    align-self: center;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+
+  nb-progress-bar {
+    flex: 1;
+  }
+</style>
+<nb-card card-height-small class="solar-card" *ngFor="let s of data ">
+  <nb-card-header><h5 style=" color: #3366ff ;"> Electric Meter</h5></nb-card-header>
+
+  <nb-card-body>
+    <h5 style=" color: #5794ff ;"> {{s.name}}  </h5>&nbsp;
+    <h6 style="color:#2c97de"> ID :  {{s.code}}</h6>
+    <h6 style="color:#2c97de"> In {{s.factoryName}}</h6>&nbsp;&nbsp;
+    <table>
+
+      <tr>
+        <td>
+          OFF
+        </td>
+        <td>
+          <nb-toggle status="{{toggleColor}}" (change)="onclickmomo()"  [(ngModel)]="chekedboolean" ></nb-toggle>
+        <!--  <ui-switch size="large"  (change)="onChange($event)" checked="true"></ui-switch>  -->
+        </td>
+         <td>
+          ON
+        </td>
+
+      </tr>
+    </table>&nbsp;&nbsp;
+    <div class="row" id="test">
+
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name1"
+            [needleValue]="needleValue_com_total_energy"
+            [centralLabel]="label_com_total_energy"
+            [options]="options"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name2 "
+            [needleValue]="needleValue_PositiveActiveTotalEnergy"
+            [centralLabel]="label_PositiveActiveTotalEnergy"
+            [options]="options2"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+           <rg-gauge-chart
+           [canvasWidth]="canvasWidth"
+           [name]="name3 "
+           [needleValue]="needleValue_ReverseActiveTotalEnergy"
+           [centralLabel]="label_ReverseActiveTotalEnergy"
+           [options]="options3"
+          [bottomLabel]="bottomLabel">
+         </rg-gauge-chart>
+
+        <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name4 "
+            [needleValue]="needleValue_ReverseActiveTotalEnergy"
+            [centralLabel]="needleValue_ActivePower"
+            [options]="options4"
+            [bottomLabel]="bottomLabelW">
+          </rg-gauge-chart>
+
+    </div>
+<div class="row">
+<div class="col-lg-3">  <h6 style="color:#2c97de"> <span style="color: gray;">Voltage : </span>  {{Voltage}} V </h6></div>
+<div class="col-lg-3">
+  <h5 style="color:#2c97de"> <span style="color: gray;">Current: </span> {{Current}} A </h5></div>
+<div class="col-lg-3">
+  <h5 style="color:#2c97de"> <span style="color: gray;">Power Grid: </span> {{PowerGridFrequency}} Hz </h5></div>
+<div class="col-lg-3">  <h5 style="color:#2c97de"> <span style="color: gray ;">Power Factor : </span>{{PowerFactor}} </h5></div>
+
+
+</div>
+    <!--&nbsp;&nbsp;&nbsp;-->
+        <!--ngx-echarts-line></ngx-echarts-line-->
+
+  </nb-card-body>
+</nb-card>

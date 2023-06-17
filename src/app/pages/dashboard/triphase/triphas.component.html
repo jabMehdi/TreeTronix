@@ -1,0 +1,214 @@
+
+<style>
+  #test,#test1,#test2,#test3 ,#test4 ,#test5 , #test6, #test7, #test8, #test9, #test10, #test11 {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 30px;
+    align-self: center;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+
+  nb-progress-bar {
+    flex: 1;
+  }
+</style>
+<nb-card  class="solar-card" *ngFor="let s of data ">
+  <nb-card-header><h5 style=" color: #d54d7ad1 ;font-family: 'Libre Baskerville', cursive"> Electric Meter</h5></nb-card-header>
+  <nb-card-body>
+
+    
+
+    <h5 style=" color: #5794ff ;"> {{s.name}}  </h5>&nbsp;
+    <h6 style="color:#2c97de"> with ID :  {{s.code}}</h6>
+    <h6 style="color:#2c97de"> In {{s.factoryName}}</h6>&nbsp;
+    <table>
+      <tr>
+        <td>
+          OFF 
+        </td>
+        <td>
+          <nb-toggle status="{{toggleColor}}" (change)="onChange()"  [(ngModel)]="chekedboolean" ></nb-toggle>
+          
+        </td>
+         <td>
+          ON 
+         </td>
+
+      </tr>
+
+      
+    </table>&nbsp;&nbsp;
+
+      <nb-tabset fullWidth>
+        <nb-tab tabTitle="Total">
+          <div class="row" id="test5">
+
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name1"
+            [needleValue]="needleValue_ComActiveTotal"
+            [centralLabel]="label_ComActiveTotal"
+            [options]="options"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name2 "
+            [needleValue]="needleValue_PositiveActiveTotal"
+            [centralLabel]="label_PositiveActiveTotal"
+            [options]="options2"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name3 "
+            [needleValue]="needleValue_ReverseActiveTotal"
+            [centralLabel]="label_ReverseActiveTotal"
+            [options]="options3"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name4 "
+            [needleValue]="needleValue_ActivePowerTotal"
+            [centralLabel]="label_ActivePowerTotal"
+            [options]="options4"
+            [bottomLabel]="bottomLabelW">
+          </rg-gauge-chart>
+          </div>
+        </nb-tab>
+        <nb-tab tabTitle="Phase A">
+          <div class="row" id="test">
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name1"
+            [needleValue]="needleValue_ComActiveTotal"
+            [centralLabel]="label_ComActiveTotal"
+            [options]="options"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name2 "
+            [needleValue]="needleValue_PositiveActiveTotal"
+            [centralLabel]="label_PositiveActiveTotal"
+            [options]="options2"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name3 "
+            [needleValue]="needleValue_ReverseActiveTotal"
+            [centralLabel]="label_ReverseActiveTotal"
+            [options]="options3"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name4 "
+            [needleValue]="needleValue_ActivePowerTotal"
+            [centralLabel]="label_ActivePowerTotal"
+            [options]="options4"
+            [bottomLabel]="bottomLabelW">
+          </rg-gauge-chart>
+          </div>&nbsp;&nbsp;&nbsp;
+          <div class="row" id="test1">
+         <br><br>&nbsp;&nbsp;&nbsp;
+          <h5 style="color:#2c97de"> <span style="color: gray;">Voltage : </span>  {{VoltagePhaseA}} V </h5>
+          <h5 style="color:#2c97de"> <span style="color: gray;">Current : </span> {{CurrentPhaseA}} A </h5>
+          <h5 style="color:#2c97de"> <span style="color: gray ;">Power Factor : </span>{{PowerFactorPhaseA}} A </h5>
+    </div>
+        </nb-tab>
+        <nb-tab tabTitle="Phase B">
+          <div class="row" id="test2">
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name1"
+            [needleValue]="needleValue_ComActiveTotal"
+            [centralLabel]="label_ComActiveTotal"
+            [options]="options"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name2 "
+            [needleValue]="needleValue_PositiveActiveTotal"
+            [centralLabel]="label_PositiveActiveTotal"
+            [options]="options2"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name3 "
+            [needleValue]="needleValue_ReverseActiveTotal"
+            [centralLabel]="label_ReverseActiveTotal"
+            [options]="options3"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name4 "
+            [needleValue]="needleValue_ActivePowerTotal"
+            [centralLabel]="label_ActivePowerTotal"
+            [options]="options4"
+            [bottomLabel]="bottomLabelW">
+          </rg-gauge-chart>
+          </div>&nbsp;&nbsp;&nbsp;
+          <div class="row" id="test3">
+            <br><br>&nbsp;&nbsp;&nbsp;
+            <h5 style="color:#2c97de"> <span style="color: gray;">Voltage : </span>  {{VoltagePhaseB}} V </h5>
+            <h5 style="color:#2c97de"> <span style="color: gray;">Current : </span> {{CurrentPhaseB}} A </h5>
+            <h5 style="color:#2c97de"> <span style="color: gray ;">Power Factor : </span>{{PowerFactorPhaseB}} A </h5>
+          </div>
+        </nb-tab>
+        <nb-tab tabTitle="Phase C">
+          <div class="row" id="test4">
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name1"
+            [needleValue]="needleValue_ComActiveTotal"
+            [centralLabel]="label_ComActiveTotal"
+            [options]="options"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name2 "
+            [needleValue]="needleValue_PositiveActiveTotal"
+            [centralLabel]="label_PositiveActiveTotal"
+            [options]="options2"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name3 "
+            [needleValue]="needleValue_ReverseActiveTotal"
+            [centralLabel]="label_ReverseActiveTotal"
+            [options]="options3"
+            [bottomLabel]="bottomLabel">
+          </rg-gauge-chart>
+          <rg-gauge-chart
+            [canvasWidth]="canvasWidth"
+            [name]="name4 "
+            [needleValue]="needleValue_ActivePowerTotal"
+            [centralLabel]="label_ActivePowerTotal"
+            [options]="options4"
+            [bottomLabel]="bottomLabelW">
+          </rg-gauge-chart>
+          </div>&nbsp;&nbsp;&nbsp;
+          <div class="row" id="test8">
+            <br><br>&nbsp;&nbsp;&nbsp;
+            <h5 style="color:#2c97de"> <span style="color: gray;">Voltage : </span>  {{VoltagePhaseC}} V </h5>
+            <h5 style="color:#2c97de"> <span style="color: gray;">Current : </span> {{CurrentPhaseC}} A </h5>
+            <h5 style="color:#2c97de"> <span style="color: gray ;">Power Factor : </span>{{PowerFactorPhaseC}} A </h5>
+          </div>
+        </nb-tab >
+      </nb-tabset>
+
+  </nb-card-body>
+  <!--ngx-echarts-line></ngx-echarts-line-->
+</nb-card>

@@ -1,0 +1,56 @@
+<style>
+  #madiv { width: 40%; }
+  #madiv2 {position: center}
+</style>
+<table width="100%" >
+  <tr>
+    <td>
+       <nb-card >
+        <nb-card-header>
+          <h1 style=" color: #3366ff ; text-align: center ;" >  Add Zone </h1>
+        </nb-card-header>
+        <nb-card-body>
+          <div id="madiv2">   <form (ngSubmit)="onSubmit()" [formGroup]="addForm">
+            <div class="form-group">
+              <div id="madiv">  <input type="text" nbInput formControlName="place" name="place" fullWidth placeholder=" Zone"> &nbsp;&nbsp; </div>
+              <nb-select [(selected)]="selectedOption" placeholder="select your factory"  >
+                <nb-option  *ngFor="let o of options" [value]="o"> {{ o.name }}</nb-option>
+
+              </nb-select>
+            </div>
+
+            <!--<button type="submit" class="btn btn-success"> Add </button>
+            <button type="Reset" class="btn btn-danger">Cancel</button>-->
+            <nb-card-footer _ngcontent-csk-c27="">
+              <button _ngcontent-csk-c27="" type="submit" nbbutton="" status="success" _nghost-csk-c16="" ng-reflect-status="success" class="appearance-filled size-medium status-success shape-rectangle transitions" aria-disabled="false" tabindex="0">
+                Add
+              </button>
+              &nbsp;&nbsp;
+              <button _ngcontent-csk-c27="" type="reset" class="cancel appearance-filled size-medium status-danger shape-rectangle transitions" nbbutton="" status="danger" _nghost-csk-c16="" ng-reflect-status="danger" aria-disabled="false" tabindex="0">
+                Cancel
+              </button>
+            </nb-card-footer>
+
+          </form>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </td>
+  </tr>
+  <tr>
+<td>
+    <nb-card>
+      <nb-card-header>
+
+        <h1 style=" color: #3366ff ; text-align: center ;" >   All zones </h1>
+      </nb-card-header>
+
+      <nb-card-body>
+        <ng2-smart-table [settings]="settings" [source]="data1">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+</td>
+  </tr>
+
+</table>

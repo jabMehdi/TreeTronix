@@ -1,0 +1,298 @@
+<style>
+  #madiv { width: 60%; }
+  #madiv2 { position: center; }
+  
+  .col-9 {
+    width: 60%;
+    margin: auto;
+  }
+
+  /* Card styling */
+  .card-header {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* Table styling */
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #fff; /* Set the font color */
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+  }
+
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+  }
+
+  /* Specific table styles */
+  .table-an-305a {
+    background-color: #fff;
+  }
+
+  .table-an-305a th,
+  .table-an-305a td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-an-103a {
+    background-color: #fff;
+  }
+
+  .table-an-103a th,
+  .table-an-103a td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-an-301 {
+    background-color: #fff;
+  }
+
+  .table-an-301 th,
+  .table-an-301 td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-an-303 {
+    background-color: #fff;
+  }
+
+  .table-an-303 th,
+  .table-an-303 td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-an-302 {
+    background-color: #fff;
+  }
+
+  .table-an-302 th,
+  .table-an-302 td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-an-304c {
+    background-color: #fff;
+  }
+
+  .table-an-304c th,
+  .table-an-304c td {
+    color: #000; /* Set the font color */
+  }
+
+  .table-sd-100 {
+    background-color: #fff;
+  }
+
+  .table-sd-100 th,
+  .table-sd-100 td {
+    color: #000; /* Set the font color */
+  }
+  /* Unsupported sensor type */
+  .unsupported {
+    text-align: center;
+    margin: 20px 0;
+  }
+</style>
+
+<div class="col-9">
+  <nb-card>
+    <nb-card-header>
+      <h1 style="color: #3366ff; text-align: center;">Decoded Sensors Information</h1>
+    </nb-card-header>
+    <nb-card-body>
+      <ng-container *ngFor="let sensor of sensorData">
+        <ng-container [ngSwitch]="sensor.type">
+          <div *ngSwitchCase="'AN-305A'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Sensor Type</th>
+                  <th>Door Contact Status</th>
+                  <th>Battery Level</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.DoorContactStatus}}</td>
+                  <td>{{sensor.BatteryLevel / 10}}V</td>
+                  <td>{{sensor.time}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'AN-103A'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Sensor Type</th>
+                  <th>Temperature</th>
+                  <th>Humidity</th>
+                  <th>Voltage</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.tempValues}}</td>
+                  <td>{{sensor.humValues}}</td>
+                  <td>{{sensor.voltage}}</td>
+                  <td>{{sensor.time}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'AN-301'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Alarm State</th>
+                  <th>Dismantle State</th>
+                  <th>Voltage</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.AlarmState}}</td>
+                  <td>{{sensor.StateDismantling}}</td>
+                  <td>{{sensor.Voltage / 10}}V</td>
+                  <td>{{sensor.time}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'AN-303'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Temperature Value</th>
+                  <th>Humidity Value</th>
+                  <th>Voltage Value</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.TempValues}}</td>
+                  <td>{{sensor.HumValues}}</td>
+                  <td>{{sensor.Voltage}}V</td>
+                  <td>{{sensor.time}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'AN-302'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Sensor Type</th>
+                <th> Status</th>
+                <th> Dismantle</th>
+                  <th>Buton satuts</th>
+                  <th>Batterie satuts</th>
+                  <th>Sensor Value</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.Status}}</td>
+                  <td>{{sensor.SatutsDismantle}}</td>
+                  <td>{{sensor.SatutsBButon}}</td>
+                  <td>{{sensor.SatutsBatterie}}</td>
+                  <td>{{sensor.SensorValue}}</td>
+                  <td>{{sensor.time}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'AN-304C'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Sensor Type</th>
+                  <th>Sensor Status</th>
+                  <th>SwitchStatus</th>
+                  <th>Battery Voltage</th>
+                  <th>Time</th>
+                 
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                  <td>{{sensor.SensorStatus}}</td>
+                  <td>{{sensor.SwitchStatus}}</td>
+                  <td>{{sensor.BatteryVolatage}}V</td>
+                  <td>{{sensor.time}}</td>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchCase="'SD-100'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                 
+                  <th>Voltage Alarm</th>
+                  <th>Tamper Alarm</th>
+                  <th>Fault Alarm</th>
+                  <th>Smoke Alarm</th>
+                  <th>Battery Level</th>
+                  <th>Temperature</th>
+                  <th>Report Interval</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  
+                  <td>{{sensor.voltageAlarm}}</td>
+                  <td>{{sensor.tamperAlarm}}</td>
+                  <td>{{sensor.faultAlarm}}</td>
+                  <td>{{sensor.smokeAlarm}}</td>
+                  <td>{{sensor.battery / 1000}}V</td>
+                  <td>{{sensor.temperature}}℃</td>
+                  <td>{{sensor.reportInterval}}min</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngSwitchDefault>
+            <h2>Unsupported Sensor Type</h2>
+            <p>This sensor type is not supported.</p>
+          </div>
+        </ng-container>
+      </ng-container>
+    </nb-card-body>
+  </nb-card>
+</div>

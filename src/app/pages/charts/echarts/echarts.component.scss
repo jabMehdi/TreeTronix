@@ -1,0 +1,30 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  ngx-echarts-pie,
+  ngx-echarts-bar,
+  ngx-echarts-line,
+  ngx-echarts-multiple-xaxis {
+    display: block;
+    height: nb-theme(card-height-large);
+    width: 100%;
+
+    ::ng-deep chart {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
+  }
+  ngx-echarts-area-stack,
+  ngx-echarts-bar-animation,
+  ngx-echarts-radar {
+    display: block;
+    height: nb-theme(card-height-medium);
+    width: 100%;
+  }
+
+  ::ng-deep .echart {
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -1,0 +1,20 @@
+
+
+<nb-card>
+  <nb-card-header>
+
+    <h1 style=" color: #3366ff ; text-align: center ;" >   All Factories </h1>
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="data1" (deleteConfirm)="onDeleteConfirm($event)" (editConfirm)="onEditConfirm($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
+
+
+
+
+
+
+

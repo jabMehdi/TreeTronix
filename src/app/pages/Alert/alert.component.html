@@ -1,0 +1,90 @@
+<form ngNativeValidate ngForm="t" (ngSubmit)="submit()"><nb-card>
+  <nb-card-header>
+
+      <h1 style="
+      color: #3366ff;
+      text-align: center ;
+  "> Alert configuration </h1>
+  </nb-card-header>
+  <nb-card-body>
+
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group">
+          <label class="label">Select device:</label>
+          <nb-select [(selected)]="selectedOption"  class="position-select" placeholder="device">
+            <nb-option *ngFor="let p of options" [value]="p" >{{ p.name }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">Data:</label>
+          <nb-select [(selected)]="data" placeholder="data">
+            <nb-option *ngFor="let t of typesData" [value]="t" >{{ t }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">Min Value :</label>
+          <input nbInput required="true"  type="number" [(ngModel)]="Vmin" name="content">
+        </div>
+        <div class="form-group">
+          <label class="label">Max Value :</label>
+          <input nbInput  type="number" required="true" [(ngModel)]="Vmax" name="valeur max">
+        </div>
+
+
+
+
+
+      </div>
+
+      <div class="col-md-6 col-sm-12">
+        <div class="form-group">
+          <label class="label">alert type:</label>
+          <nb-select [(selected)]="status">
+            <nb-option *ngFor="let t of types" [value]="t">{{ t }}</nb-option>
+          </nb-select>
+        </div>
+
+        <div>
+          <nb-checkbox [(ngModel)]="Nemail" [ngModelOptions]="{standalone: true}">Notify by Email</nb-checkbox>
+          <!--input class=" form-control" type="text" id="email" required [(ngModel)]="email"
+          name="email" placeholder="treetronix@gmail.com" -->
+        </div>
+        <div>
+          <nb-checkbox [(ngModel)]="Nsms" [ngModelOptions]="{standalone: true}">Notify by SMS</nb-checkbox>
+        </div>
+        <div>
+          <nb-checkbox [(ngModel)]="Ntoast" [ngModelOptions]="{standalone: true}">Notify by Toast</nb-checkbox>
+        </div>
+      </div>
+    </div>
+
+  </nb-card-body>
+
+  <nb-card-footer>
+    <button nbButton status="success" type="submit">save alert</button>
+    <button nbButton status="danger" type="reset">cancel</button>
+  </nb-card-footer>
+</nb-card>
+</form>
+
+
+
+<nb-card>
+  <nb-card-header style="
+    color: #23afdc;
+    text-align: center;">
+    All alerts
+  </nb-card-header>
+  <nb-card-body size="100%">
+    <ng2-smart-table [settings]="settings" [source]="dt" (deleteConfirm)="onDeleteConfirm($event)" (editConfirm)="onEditConfirm($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
+
+
+
+
+
+
+

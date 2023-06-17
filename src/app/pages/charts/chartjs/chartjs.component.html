@@ -1,0 +1,65 @@
+<nb-card>
+  <nb-card-header>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select factory ss : <nb-select [(selected)]="selectedFactory" placeholder="Factory">
+              <nb-option (click)="selectZone()" *ngFor="let o of factoryData" [value]="o"> {{ o.name }}</nb-option>
+            </nb-select>
+
+          </h4>
+        </div>
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select Zone : <nb-select [(selected)]="selectedZone" placeholder="Zone">
+              <nb-option (click)="selectDevice()" *ngFor="let o of places" [value]="o"> {{ o }}</nb-option>
+            </nb-select>
+
+          </h4>
+        </div>
+
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select Device : <nb-select [(selected)]="selectedDevice" placeholder="Devices">
+              <nb-option (click)="send()" *ngFor="let o of devices" [value]="o"> {{ o.name }}</nb-option>
+            </nb-select>
+           
+          </h4>
+        </div>
+
+      </div>
+
+
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+  
+      <!--div class="col-lg-4">
+        <h3 style="
+        color: #23afdc;"> <span style="
+        color: #222bdc;"> Device </span> : {{selectedDevice.name}}</h3>
+      </div>
+      <div lass="col-lg-4">
+        <h4 style="
+        color: #3b59dc;"> At {{selectedFactory.name }} factory
+        </h4>
+
+      </div>
+
+      <div lass="col-lg-4">
+  
+    <h5 style="
+      color: #3b59dc;">At {{selectedZone }} Zone
+    </h5>
+       
+
+      </div-->
+
+
+ 
+    <!--ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis-->
+    <ngx-chartjs-line></ngx-chartjs-line>
+  </nb-card-body>
+</nb-card>
+

@@ -1,0 +1,90 @@
+<style>
+  /* Card styling */
+  nb-card {
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  nb-card-header {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  nb-card-body {
+    padding: 20px;
+  }
+
+  /* Table styling */
+  ng2-smart-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  ng2-smart-table th,
+  ng2-smart-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  ng2-smart-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+  }
+
+  ng2-smart-table td {
+    color: #555;
+  }
+
+  /* Custom action button */
+  .custom-action {
+    margin-right: 8px;
+    padding: 4px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #6f42c1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .custom-action:hover {
+    background-color: #512da8;
+  }
+</style>
+
+<div>
+  <nb-card>
+    <nb-card-header>
+      <h1 style="color: #42aaff; text-align: center;">All Devices</h1>
+    </nb-card-header>
+    <nb-card-body size="100%">
+      <ng2-smart-table [settings]="settings" [source]="data" (deleteConfirm)="onDeleteConfirm($event)" (editConfirm)="onEditConfirm($event)">
+        <ng-template ng2-smart-table-cell-template let-rowData="rowData" let-value="value" ng2-smart-table-cell-template>
+          <div class="actions-container">
+            <button nbButton size="small" class="custom-action" (click)="onCustomAction({ action: 'decode', data: rowData })">
+              <i class="nb-search"></i>
+            </button>
+            {{ rowData.code }}
+            {{ rowData.name }}
+            {{ rowData.type }}
+            {{ rowData.factoryName }}
+            {{ rowData.area }}
+            <app-delete-data-button [rowData]="rowData" (deleteData)="onDeleteData($event)"></app-delete-data-button>
+          </div>
+        </ng-template>
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -1,0 +1,15 @@
+
+
+<nb-card>
+  <nb-card-header >
+    <h1 style=" color: #3366ff ; text-align: center ;" >  Devices History </h1>
+  </nb-card-header>
+<div *ngFor="let a of data">
+  <nb-card-body size="100%">
+    <ng2-smart-table [settings]="settings" [source]="data">
+    </ng2-smart-table>
+  </nb-card-body>
+</div>
+</nb-card>
+
+

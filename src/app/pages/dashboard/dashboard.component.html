@@ -1,0 +1,523 @@
+<script src="node_modules/angular/angular.min.js"></script>
+<script src="node_modules/angular-gauge/dist/angularjs-gauge.min.js"></script>
+
+<nb-card size="100%" fullWidth>
+  <!--div class="form-group">
+
+
+      <nb-select [(selected)]="selectedOption" placeholder="select your factory"  >
+        <nb-option (click)="filter2()" > All</nb-option>
+        <nb-option (click)="filter()" *ngFor="let o of options" [value]="o"> {{ o.name }}</nb-option>
+
+      </nb-select>
+
+      <nb-select [(selected)]="selectedDevice" placeholder="select your device"  >
+        <nb-option (click)="filter2()" > All</nb-option>
+        <nb-option (click)="filterDevices()" *ngFor="let d of devices" [value]="o"> {{ d.name }}</nb-option>
+
+      </nb-select>
+
+
+
+      
+    </div-->
+
+  <!--hedear-->
+  <nb-card-header>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive">
+            Select factory :
+            <nb-select
+              [(selected)]="selectedFactory"
+              (change)="getSensorByFac($event)"
+              placeholder="Factory"
+            >
+              <nb-option
+                (click)="selectZone()"
+                *ngFor="let o of fd"
+                [value]="o"
+              >
+                {{ o.name }}</nb-option
+              >
+            </nb-select>
+          </h4>
+        </div>
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive">
+            Select Zone :
+            <nb-select [(selected)]="selectedZone" placeholder="Zone">
+              <nb-option
+                (click)="selectDevice()"
+                *ngFor="let o of places"
+                [value]="o"
+              >
+                {{ o }}</nb-option
+              >
+            </nb-select>
+          </h4>
+        </div>
+
+        <div class="col-sm-4">
+          <h4 style="
+          color: #d54d7b;font-family: 'Rouge Script', cursive">
+            Select Device :
+            <nb-select [(selected)]="selectedDevice" placeholder="Devices">
+              <nb-option
+                (click)="send()"
+                *ngFor="let o of allDevisetwo"
+                [value]="o.type"
+              >
+                {{ o.type }}</nb-option
+              >
+            </nb-select>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-tabset fullWidth>
+      <nb-tab tabTitle="Actuators">
+        <nb-card accent="info">
+          <nb-card-body>
+            <tr>
+              <td *ngIf="testDevice('triphase')">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <ngx-triphase></ngx-triphase>
+
+
+                
+              </td>
+            </tr>
+          </nb-card-body>
+          </nb-card>
+          <div *ngIf="testDevice('mono')" >
+            <ngx-monophase></ngx-monophase>
+          </div>
+        <div class="row"></div>
+   
+      </nb-tab>
+      <nb-tab tabTitle="Sensors">
+        <nb-card accent="info">
+          <nb-card-body>
+            <tr>
+              <td *ngIf="testDevice('AN-304C')">
+                <nb-card size="small">
+                  <nb-tabset fullWidth>
+                    <nb-tab tabTitle="AN304C Parameters ">
+                      <div class="slider-container" *ngIf="an304c">
+                        <div fullWidth>
+                          <h4>
+                            <span
+                              *ngIf="
+                                an304c[an304c.length - 1].SensorStatus == 1
+                              "
+                              style="color: #ae0000"
+                            >
+                              <img
+                                src="../assets/images/motiondetected.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              Motion detected
+                            </span>
+                          </h4>
+                          <h4>
+                            <span
+                              *ngIf="
+                                an304c[an304c.length - 1].SensorStatus == 0"
+                                style="color: #0da321">
+                              <img
+                                src="../assets/images/Motion22.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              No Motion</span
+                            >
+                          </h4>
+                        </div>
+
+                        <br />
+                      </div>
+                      <p>
+                        <span
+                          >Battery level :
+                          {{ an304c[an304c.length - 1].BatteryVolatage }} V
+                        </span>
+                      </p>
+                      <p><span>devEUI : FFFFFF100001BE9E</span></p>
+
+                      <a routerLink="../s-devices">More details</a>
+                    </nb-tab>
+                  </nb-tabset>
+                </nb-card>
+              </td>
+
+              <td *ngIf="testDevice('AN-305A')">
+                <nb-card size="small">
+                  <nb-tabset fullWidth>
+                    <nb-tab tabTitle="sensor door ">
+                      <div class="slider-container">
+                        <div fullWidth>
+                          <h4>
+                            
+                            <span
+                              *ngIf="service.an305a.DoorContactStatus == '0'"
+                              class="card-title"
+                              style="color: #ae0000"
+                            >
+                              <img
+                                src="../assets/images/Porte1.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              Door is closed
+                            </span>
+                          </h4>
+                          <h4>
+                            <span
+                              *ngIf="service.an305a.DoorContactStatus == '01'"
+                              class="card-title"
+                              style="color: #0da321"
+                            >
+                              <img
+                                src="../assets/images/Porte2.png"
+                                width="100px"
+                                height="100px"
+                              />Door is opened
+                            </span>
+                          </h4>
+                          <p>
+                            <span
+                              >Battery Level :
+                              {{ service.an305a.BatteryLevel }}</span
+                            >
+                          </p>
+                          <p></p>
+                          <p>devEUI: FFFFFF10000192C8</p>
+                        </div>
+                      </div>
+
+                      <a routerLink="../s-devices">More details</a>
+                    </nb-tab>
+                  </nb-tabset>
+                </nb-card>
+              </td>
+            </tr>
+
+            <tr>
+              <td *ngIf="testDevice('AN-302')">
+                <nb-card size="small">
+                  <nb-tabset fullWidth>
+                    <nb-tab tabTitle="AN302 GAZ MONITOR ">
+                      <div class="slider-container" *ngIf="an302">
+                        <div fullWidth>
+                          <h4>
+                            <span
+                              *ngIf="an302[an302.length - 1].FrameFormat == 0"
+                              style="color: #0da321"
+                            >
+                              <img
+                                src="../assets/images/Alarme2.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              Stable</span
+                            >
+                          </h4>
+                          <h4>
+                            <span
+                              *ngIf="an302[an302.length - 1].FrameFormat == 1"
+                              style="color: #ae0000"
+                            >
+                              <img
+                                src="../assets/images/Alarme1.png"
+                                width="100px"
+                                height="100px"
+                              />Alert
+                            </span>
+                          </h4>
+                        </div>
+                      </div>
+
+                      <p>
+                        <span
+                          >Battery Status :
+                          {{ service.an302.satutsBatterie }}</span
+                        >
+                      </p>
+                      <p><span>devEUI : FFFFFF100000C73D</span></p>
+
+                      <a routerLink="../s-devices">More details</a>
+                    </nb-tab>
+                  </nb-tabset>
+                </nb-card>
+              </td>
+              <!-- &nbsp;&nbsp;&nbsp;&nbsp; -->
+              <td *ngIf="testDevice('AN-301')">
+                <nb-card size="small">
+                  <nb-tabset fullWidth>
+                    <nb-tab tabTitle="SOS Button AN301 ">
+                      <div class="slider-container" *ngIf="an301">
+                        <div fullWidth>
+                          <h4>
+                            <span
+                              *ngIf="an301[an301.length - 1].AlarmState == 0"
+                              style="color: #0da321"
+                            >
+                              <img
+                                src="../assets/images/Green.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              No Alarm
+                            </span>
+                          </h4>
+                          <h4>
+                            <span
+                              *ngIf="an301[an301.length - 1].AlarmState == 1"
+                              style="color: #ae0000"
+                            >
+                              <img
+                                src="../assets/images/Rouge.png"
+                                width="100px"
+                                height="100px"
+                              />
+                              Alarm
+                            </span>
+                          </h4>
+                        </div>
+                        <p>
+                          <span
+                            >Battery Level: {{ service.an301.BatteryLevel }}
+                          </span>
+                        </p>
+                        <p><span>devEUI : FFFFFF100001AAD3</span></p>
+                      </div>
+
+                      <a routerLink="../s-devices">More details</a>
+                    </nb-tab>
+                  </nb-tabset>
+                </nb-card>
+              </td>
+            </tr>
+            <td>
+                <nb-card size="small">
+                  <nb-tabset fullWidth>
+                    <nb-tab tabTitle=" Smoke Parameters">
+                      <div class="slider-container">
+                        <div fullWidth>
+                          <h6>
+                            <span
+                              *ngIf="smokeAlarm != 'ok'"
+                              class="card-title"
+                              style="color: #ae0000"
+                              ><img
+                                src="../assets/images/alert smoke.png"
+                                class="center"
+                                width="100px"
+                                height="100px"
+                              />
+                              Incident Detected At {{ smoke.factory }} factory
+                              in {{ smoke.area }}
+                            </span>
+                          </h6>
+                          <h6>
+                            <span
+                              *ngIf="smokeAlarm == 'ok'"
+                              class="card-title"
+                              style="color: #0da321"
+                              ><img
+                                src="../assets/images/image smoke vert.png"
+                                class="center"
+                                width="100px"
+                                height="100px"
+                              />
+                              No incident detected
+                            </span>
+                          </h6>
+                          <p>DevEUI : 5555555555555555</p>
+                        </div>
+                      </div>
+
+                      <a routerLink="../s-devices">More details</a>
+                    </nb-tab>
+                  </nb-tabset>
+                </nb-card>
+              </td>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+          </nb-card-body>
+        </nb-card>
+
+        <nb-card accent="info">
+          <nb-card-body>
+            <tr>
+              <td *ngIf="testDevice('Sensor')">
+                <ngx-temperature></ngx-temperature>
+              </td>
+
+              <td *ngIf="testDevice('AN-303')"><ngx-an303></ngx-an303></td>
+            </tr>
+
+            <tr>
+              <!-- WaterMeter -->
+              <td *ngIf="testDevice('WaterMeter')"><ngx-water></ngx-water></td>
+              <!-- <td  *ngIf="testDevice('AN-103A')" > <ngx-an103-a></ngx-an103-a> </td> -->
+              
+            </tr>
+          </nb-card-body>
+        </nb-card>
+
+        <hr />
+
+        <div class="row">
+          <div>
+            <td></td>
+          </div>
+        </div>
+      </nb-tab>
+
+      <nb-tab tabTitle="Other Sensors">
+        <div class="row"></div>
+        <table>
+          <tr>
+            <td *ngIf="testDevice('WaterMeter')">
+              <h3>Lt 22</h3>
+              <br />
+              Voltage de la chaine AVI1
+              <span style="color: #2cb628"> {{ lt22.AVI1 }} V </span>
+              <br />
+              Voltage de la chaine AVI2
+              <span style="color: #2cb628"> {{ lt22.AVI2 }} V </span>
+              <br />
+              Intensité de la chaine ACI1
+              <span style="color: #2cb628"> {{ lt22.ACI1 }} A </span>
+              <br />
+              Intensité de la chaine ACI2
+              <span style="color: #2cb628"> {{ lt22.ACI2 }} A </span> <br />
+              <br />
+              <table>
+                <td>
+                  RO1
+                  <div fullWidth>
+                    <span
+                      *ngIf="service.lt22.RO1 == '01'"
+                      style="color: #2cb628"
+                    >
+                      <img
+                        src="../assets/images/ON.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                    <span
+                      *ngIf="service.lt22.RO1 == '00'"
+                      style="color: #ce0e0e"
+                    >
+                      <img
+                        src="../assets/images/OFF.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                  </div>
+                  <br />
+                  RO2
+                  <div fullWidth>
+                    <span
+                      *ngIf="service.lt22.RO2 == '01'"
+                      style="color: #2cb628"
+                    >
+                      <img
+                        src="../assets/images/ON.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                    <span
+                      *ngIf="service.lt22.RO2 == '00'"
+                      style="color: #ce0e0e"
+                    >
+                      <img
+                        src="../assets/images/OFF.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                  </div>
+                  <br />
+                </td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td>
+                  DI3
+                  <div fullWidth>
+                    <span
+                      *ngIf="service.lt22.DI3 == '00'"
+                      style="color: #2cb628"
+                    >
+                      <img
+                        src="../assets/images/ON.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                    <span
+                      *ngIf="service.lt22.DI3 == '01'"
+                      style="color: #ce0e0e"
+                    >
+                      <img
+                        src="../assets/images/OFF.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                  </div>
+                  <br />
+                  DI1
+                  <div fullWidth>
+                    <span
+                      *ngIf="service.lt22.DI1 == '00'"
+                      style="color: #2cb628"
+                    >
+                      <img
+                        src="../assets/images/ON.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                    <span
+                      *ngIf="service.lt22.DI1 == '01'"
+                      style="color: #ce0e0e"
+                    >
+                      <img
+                        src="../assets/images/OFF.png"
+                        width="50px"
+                        height="50px"
+                      />
+                    </span>
+                  </div>
+                </td>
+              </table>
+              <br />
+            </td>
+          </tr>
+        </table>
+
+        <div class="row"></div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <table>
+          <tr>
+            <td>Senssor</td>
+            <br />
+            <td>Sensor</td>
+          </tr>
+        </table>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>

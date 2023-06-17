@@ -1,0 +1,11 @@
+<nb-card *ngFor="let item of data" i as index >
+  <div class="row" [style.background-color]="getColor(values)" style="    border-radius: 14px;">
+    <div class="col-1 justify-content-md-center "><img src="../../../../assets/images/sos.png" style="width: 78%" /></div>
+    <div class="col-2 center-block"><b style="color: gray;">Building Name : </b><br> <p style="color: #ff0000;">{{ item.factoryName }}</p></div>
+    <div class="col-2"><b style="color: gray;">Device  Name : </b> <br> <p style="color: #ff0000;">{{ item.name }}</p></div>
+    <div class="col-2"><b style="color: gray;">Device  Code : </b><br> <p style="color: #ff0000;">{{ item.code }}</p></div>
+    <div class="col-2"><b style="color: gray;">Device Type :</b> <br> <p style="color: #ff0000;">{{ item.type }}</p></div>
+    <div class="col-1"><b style="color: gray;">Voltage : </b> <br> <p style="color: #ff0000;">{{ voltageSOS }} V</p></div>
+    <div class="col-1"><b style="color: gray;">Valeur : </b> <br> <p style="color: #ff0000;">{{ values }} </p></div>
+  </div>
+</nb-card>
