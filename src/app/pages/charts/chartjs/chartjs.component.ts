@@ -23,6 +23,7 @@ export class ChartjsComponent {
   selectedDevice: any = 'ok';
   findFactoryByuser = '/api/Factories/factory/ByUser';
   selectedOption: any = 'ok';
+  selectedChart: string;
 
   constructor(private http: HttpClient, private  service: DashService) {
     this.token = {
@@ -90,7 +91,9 @@ export class ChartjsComponent {
     this.service.DataStat(this.selectedDevice);
 
   }
- 
+  showChart(chartType: string) {
+    this.selectedChart = chartType;
+  }
 
 
 }

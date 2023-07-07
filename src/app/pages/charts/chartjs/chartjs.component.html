@@ -1,10 +1,10 @@
 <nb-card>
   <nb-card-header>
     <div class="form-group">
-      <div class="row">
+      <div class="row" style="margin-bottom: 40px;">
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select factory ss : <nb-select [(selected)]="selectedFactory" placeholder="Factory">
+          color: #d54d7b;font-family: 'Arial', cursive"> Select factory : <nb-select [(selected)]="selectedFactory" placeholder="Factory">
               <nb-option (click)="selectZone()" *ngFor="let o of factoryData" [value]="o"> {{ o.name }}</nb-option>
             </nb-select>
 
@@ -12,7 +12,7 @@
         </div>
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select Zone : <nb-select [(selected)]="selectedZone" placeholder="Zone">
+          color: #d54d7b;font-family: 'Arial', cursive"> Select Zone : <nb-select [(selected)]="selectedZone" placeholder="Zone">
               <nb-option (click)="selectDevice()" *ngFor="let o of places" [value]="o"> {{ o }}</nb-option>
             </nb-select>
 
@@ -21,16 +21,26 @@
 
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Rouge Script', cursive"> Select Device : <nb-select [(selected)]="selectedDevice" placeholder="Devices">
+          color: #d54d7b;font-family: 'Arial', cursive"> Select Device : <nb-select [(selected)]="selectedDevice" placeholder="Devices">
               <nb-option (click)="send()" *ngFor="let o of devices" [value]="o"> {{ o.name }}</nb-option>
             </nb-select>
            
           </h4>
         </div>
 
+       
       </div>
-
-
+      <div class="row">
+        <div class="col-sm-4">
+          <h4 style="color: #d54d7b; font-family: 'Arial', cursive">Select Chart:
+          <nb-select [(selected)]="selectedChart" placeholder="Chart Type">
+            <nb-option (click)="showChart('Radar')" value="Radar">Radar Chart</nb-option>
+            <nb-option (click)="showChart('axis')" value="axis">Axis Chart</nb-option>
+            <nb-option (click)="showChart('bar')" value="bar">Bar Chart</nb-option>
+          </nb-select>
+        </h4>
+        </div>
+      </div>
     </div>
   </nb-card-header>
   <nb-card-body>
@@ -59,7 +69,10 @@
 
  
     <!--ngx-chartjs-multiple-xaxis></ngx-chartjs-multiple-xaxis-->
-    <ngx-chartjs-line></ngx-chartjs-line>
+    <div *ngIf="selectedChart === 'Radar'"><ngx-chartjs-Radar></ngx-chartjs-Radar></div>
+    <div *ngIf="selectedChart === 'axis'"><ngx-chartjs-line></ngx-chartjs-line></div>
+    <div *ngIf="selectedChart === 'bar'"><ngx-chartjs-bar></ngx-chartjs-bar></div>
+    
   </nb-card-body>
 </nb-card>
 

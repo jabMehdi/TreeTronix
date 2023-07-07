@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { isNumber, reverse, sortBy,isNaN } from 'lodash';
+
 
 @Component({
   selector: 'app-decoder',
@@ -10,6 +12,8 @@ import { ActivatedRoute } from '@angular/router';
 export class DecodersComponent implements OnInit {
   sensorCode: string;
   sensorData: any;
+  sortedColumn: string;
+  isSortReversed: boolean;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
   ngOnInit(): void {
@@ -39,5 +43,25 @@ export class DecodersComponent implements OnInit {
     }
   }
   
+ 
+
+  sortColumn(column: string): void {
+    if (this.sortedColumn === column) {
+      this.isSortReversed = !this.isSortReversed;
+      this.sensorData = this.isSortReversed ? reverse(this.sensorData) : sortBy(this.sensorData, [column]);
+    } else {
+      this.sortedColumn = column;
+      this.isSortReversed = false;
   
+      if (column === 'tempValues' || column === 'humValues') {
+        this.sensorData = sortBy(this.sensorData, [(data) => parseFloat(data[column])]);
+      } else {
+        this.sensorData = sortBy(this.sensorData, [column]);
+      }
+    }
+  }
+  
+  
+  
+    
 }

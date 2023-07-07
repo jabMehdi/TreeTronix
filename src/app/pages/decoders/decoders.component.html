@@ -106,6 +106,24 @@
     text-align: center;
     margin: 20px 0;
   }
+  .clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: rgba(71, 38, 239, 0.4);
+}
+
+/* Styles for normal sort */
+.sort-asc {
+  color: green;
+}
+
+/* Styles for reverse sort */
+.sort-desc {
+  color: red;
+}
+
 </style>
 
 <div class="col-9">
@@ -142,10 +160,10 @@
               <thead>
                 <tr>
                   <th>Sensor Type</th>
-                  <th>Temperature</th>
-                  <th>Humidity</th>
-                  <th>Voltage</th>
-                  <th>Time</th>
+                  <th (click)="sortColumn('tempValues')" [class]="'clickable' + (sortedColumn === 'tempValues' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Temperature</th>
+                  <th (click)="sortColumn('humValues')" [class]="'clickable' + (sortedColumn === 'humValues' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Humidity</th>
+                  <th (click)="sortColumn('voltage')" [class]="'clickable' + (sortedColumn === 'voltage' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Voltage</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
                 </tr>
               </thead>
               <tbody>
