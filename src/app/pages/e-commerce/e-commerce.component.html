@@ -1,12 +1,32 @@
+<style>
+  .dashboard-container{
+    display: flex; /* Use Flexbox to arrange items */
+    flex-direction: row; /* Items will be placed horizontally */
+  }
+ 
+  .dashboard-item {
+    margin-right: 35px; /* Adjust this value as needed */
+  }
+</style>
 
+<div>
+  <nb-card>
+    <nb-card-body>
+    <div>
+      <ngx-user-profile></ngx-user-profile>
+    </div>
+    
+    <div class="dashboard-container">
+      <div class="dashboard-item">
+      <app-factory-map></app-factory-map>    
+    </div>
 
-<div class="row">
-  <div class="col-xxl-9">
-    <ngx-country-orders></ngx-country-orders>
-  </div>
+  <div class="dashboard-item">
+      <ngx-dashboard-stats></ngx-dashboard-stats>
+    </div>
 
-  <div class="col-xxl-3">
-    <ngx-progress-section></ngx-progress-section>
-  </div>
-</div>
+    </div>
 
+    </nb-card-body>
+    </nb-card>
+    </div>

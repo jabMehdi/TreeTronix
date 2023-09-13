@@ -1,0 +1,139 @@
+<style>
+  .title {
+      color: #3366ff;
+      justify-content: center; /* Horizontal center */
+      text-align: center; /* Center text */
+      margin-top: -5 px;
+  }
+  .dashboard-stats {
+    margin-top: 18%;
+      width: 320px;
+  }
+    
+  .info-item {
+      margin-bottom: 5px; /* Remove the margin */
+      font-size: 18px;
+  }
+
+  .info-item label {
+      font-size: 22px;
+      margin-top: 5px;
+      font-weight: bold;
+  }
+
+  .info-table {
+      width: 100%;
+  }
+
+  .info-table td {
+      padding: 10px;
+  }
+
+  .info-table .label-cell {
+      font-size: 22px;
+      font-weight: bold;
+  }
+
+  .info-table .data-cell {
+      font-size: 20px;
+  }
+
+  .bold1 { 
+      font-weight: bold;
+      font-size: 20px;
+  }
+  .list {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding-left: 10px;
+  }
+
+  .list-item {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+</style>
+
+  <nb-card size="small">
+    <nb-card-body>
+        <h2 id="title" class="title">Stat Info</h2>
+        <div class="dashboard-stats">
+            <table class="info-table">
+                <tr class="info-item">
+                    <td class="label-cell"><a href="pages/mapbox">Factories</a></td>
+                    <td class="data-cell">{{ numberOfFactories }}</td>
+                    <td><button class="btn btn-primary btn-profile" style="margin-left: 40%;" (click)="toggleFactoryList()">List</button></td>
+                </tr>
+                <tr *ngIf="factoryListVisible" class="info-item">
+                    <td colspan="2">
+                      <ul class="list">
+                        <li *ngFor="let factory of data" class="list-item">{{ factory.name }}</li>
+                      </ul>
+                    </td>
+                  </tr>
+                <tr class="info-item">
+                    <td class="label-cell"><a href="pages/s-devices">Devices</a></td>
+                    <td class="data-cell">{{ numberOfDevices }}</td>
+                    <td><button class="btn btn-primary btn-profile" style="margin-left: 40%;" (click)="toggleDeviceList()">List</button></td>
+                </tr>
+                <tr *ngIf="DeviceListVisible" class="info-item">
+                  <td colspan="2">
+                    <ul class="list">
+                      <li *ngFor="let sensor of data1" class="list-item">
+                        {{ sensor.name }} (Type: {{ sensor.type }})
+
+                        <ng-container [ngSwitch]="sensor.type">
+                          <div *ngSwitchCase="'AN-305A'">
+                                  {{sensor.BatteryLevel / 10}}V
+                          </div>
+                
+                          <div *ngSwitchCase="'AN-103A'">
+                                  {{sensor.voltage}}V
+                          </div>
+                
+                          <div *ngSwitchCase="'AN-301'">
+                                  {{sensor.Voltage / 10}}V
+                          </div>
+                
+                          <div *ngSwitchCase="'AN-303'">
+                                  {{sensor.Voltage}}V
+                                
+                          </div>
+                
+                          <div *ngSwitchCase="'AN-302'">
+                                  {{sensor.SatutsBatterie}}V
+                            
+                          </div>
+                
+                          <div *ngSwitchCase="'AN-304C'">
+                                  {{sensor.BatteryVolatage}}V
+                               
+                          </div>
+                
+                          <div *ngSwitchCase="'SD-100'">
+                                  {{sensor.battery / 1000}}V
+                          </div>
+                          
+
+                          </ng-container>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>                
+                <tr class="info-item">
+                    <td class="label-cell"><a href="pages/alert">Alerts</a></td>
+                    <td class="data-cell">{{ numberOfAlerts }}</td>
+                    <td><button class="btn btn-primary btn-profile" style="margin-left: 40%;" (click)="toggleAlertList()">List</button></td>
+                </tr>
+                <tr *ngIf="AlertListVisible" class="info-item">
+                    <td colspan="2">
+                      <ul class="list">
+                        <li *ngFor="let alert of data2" class="list-item">{{ alert.deviceName }}</li>
+                      </ul>
+                    </td>
+                  </tr>
+            </table>
+        </div>
+    </nb-card-body>
+  </nb-card>
+  

@@ -80,7 +80,7 @@ console.log("user email: "+this.email)  }
     params: new HttpParams().append('token', localStorage.getItem('token')),
   };
   options = [];
-  ok  = this.http.post('/api/sensors/sensor/findByType', {type : ['Sensor','AN-303','AN-302',]},
+  ok  = this.http.post('/api/sensors/sensor/findByType', {type : ['Sensor','AN-303','AN-302','AN-305A','AN-301','AN-103A']},
     this.option).subscribe(data => {
     const resSTR = JSON.stringify(data);
     const resJSON = JSON.parse(resSTR);

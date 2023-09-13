@@ -1,0 +1,69 @@
+<style>
+    .profile-info {
+      display: flex;
+      flex-direction: column;    
+        justify-content: center; /* Horizontal center */
+        text-align: center; /* Center text */   
+        margin-top: -10px;
+    }
+  
+    .info-item {
+        margin-bottom: 20px; /* Remove the margin */
+        font-size: 18px;
+    }
+  
+    .info-item label {
+        font-size: 22px;
+        margin-top: 10px;
+       
+      font-weight: bold;
+    }
+  
+    .info-item div {
+      padding-left: 0px;
+    }
+    .bold1 {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .welcome-message {
+        display: flex;
+        justify-content: center; /* Horizontal center */
+        align-items: center; /* Vertical center */
+        text-align: center; /* Center text */
+        margin-bottom: 20px; /* Add margin to separate from other content */
+        margin-top: 10px;
+        font-size: 20px;
+    }
+
+  </style>
+
+      <div class="welcome-message">
+        Welcome, <span class="bold1">{{ data.username }} </span> !
+       Thank you for using our platform. Explore the various features available.
+      </div>
+  
+  
+  <nb-card size="small">
+    <nb-card-body>
+      <div class="profile-info">
+        <h2 id="title" class="title" style="color: #3366ff;">User Profile</h2>
+        <div class="info-item">
+          <label>Full name:</label>
+          <div>{{ data.username }}</div>
+        </div>
+  
+        <div class="info-item">
+          <label>Num Tel:</label>
+          <div>{{ data.numTel }}</div>
+        </div>
+  
+        <div class="info-item">
+          <label>Email:</label>
+          <div>{{ data.email }}</div>
+        </div>
+        <button class="btn btn-primary btn-profile" (click)="goToProfilePage()">Edit Profile</button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+  

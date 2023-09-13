@@ -69,6 +69,7 @@ export class AllfactoryComponent {
     });
     this.data1 = this.data;
   });
+  
 
   onDeleteConfirm(event): void {
     Swal.fire({

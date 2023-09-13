@@ -5,5 +5,5 @@ export  class Sensor {
   name:  string;
   value: string;
   factoryid: string;
-  
+
 }

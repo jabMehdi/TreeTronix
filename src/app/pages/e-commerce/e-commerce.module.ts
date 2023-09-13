@@ -55,6 +55,11 @@ import { EarningCardBackComponent } from './earning-card/back-side/earning-card-
 import { EarningPieChartComponent } from './earning-card/back-side/earning-pie-chart.component';
 import { EarningCardFrontComponent } from './earning-card/front-side/earning-card-front.component';
 import { EarningLiveUpdateChartComponent } from './earning-card/front-side/earning-live-update-chart.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FactoryMapComponent } from './factory-map/factory-map.component';
+import { DashboardStatsComponent } from './dashboard-stats/dashboard-stats.component';
+
 
 @NgModule({
   imports: [
@@ -71,6 +76,7 @@ import { EarningLiveUpdateChartComponent } from './earning-card/front-side/earni
     NgxEchartsModule,
     NgxChartsModule,
     LeafletModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     ECommerceComponent,
@@ -105,6 +111,9 @@ import { EarningLiveUpdateChartComponent } from './earning-card/front-side/earni
     EarningCardBackComponent,
     EarningPieChartComponent,
     EarningLiveUpdateChartComponent,
+    UserProfileComponent,
+    FactoryMapComponent,
+    DashboardStatsComponent,
   ],
   providers: [
     CountryOrdersMapService,

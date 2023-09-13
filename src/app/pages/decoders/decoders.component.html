@@ -124,6 +124,35 @@
   color: red;
 }
 
+/* Custom pagination button styles */
+.pagination button {
+  background-color: #3366ff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #2244dd;
+}
+
+.pagination button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination .page-number {
+  margin: 0 5px;
+}
+
 </style>
 
 <div class="col-9">
@@ -132,16 +161,21 @@
       <h1 style="color: #3366ff; text-align: center;">Decoded Sensors Information</h1>
     </nb-card-header>
     <nb-card-body>
-      <ng-container *ngFor="let sensor of sensorData">
+      <div class="pagination">
+        <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">Previous</button>
+        <span class="page-number">{{ currentPage }}</span>
+        <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">Next</button>
+      </div>           
+      <ng-container *ngFor="let sensor of paginatedData">
         <ng-container [ngSwitch]="sensor.type">
           <div *ngSwitchCase="'AN-305A'">
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
                   <th>Sensor Type</th>
-                  <th>Door Contact Status</th>
-                  <th>Battery Level</th>
-                  <th>Time</th>
+                  <th (click)="sortColumn('DoorContactStatus')" [class]="'clickable' + (sortedColumn === 'DoorContactStatus' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Door Contact Status</th>
+                  <th (click)="sortColumn('BatteryLevel')" [class]="'clickable' + (sortedColumn === 'BatteryLevel' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Battery Level</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -183,10 +217,10 @@
               <thead>
                 <tr>
                   <th>Type</th>
-                  <th>Alarm State</th>
-                  <th>Dismantle State</th>
-                  <th>Voltage</th>
-                  <th>Time</th>
+                  <th (click)="sortColumn('AlarmState')" [class]="'clickable' + (sortedColumn === 'AlarmState' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Alarm State</th>
+                  <th (click)="sortColumn('StateDismantling')" [class]="'clickable' + (sortedColumn === 'StateDismantling' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Dismantle State</th>
+                  <th (click)="sortColumn('Voltage')" [class]="'clickable' + (sortedColumn === 'Voltage' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Voltage</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -205,11 +239,10 @@
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>Temperature Value</th>
-                  <th>Humidity Value</th>
-                  <th>Voltage Value</th>
-                  <th>Time</th>
+                  <th (click)="sortColumn('tempValues')" [class]="'clickable' + (sortedColumn === 'tempValues' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Temperature</th>
+                  <th (click)="sortColumn('humValues')" [class]="'clickable' + (sortedColumn === 'humValues' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Humidity</th>
+                  <th (click)="sortColumn('Voltage')" [class]="'clickable' + (sortedColumn === 'Voltage' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Voltage</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -229,13 +262,13 @@
               <thead>
                 <tr>
                   <th>Sensor Type</th>
-                <th> Status</th>
-                <th> Dismantle</th>
-                  <th>Buton satuts</th>
-                  <th>Batterie satuts</th>
-                  <th>Sensor Value</th>
-                  <th>Time</th>
-                </tr>
+                  <th (click)="sortColumn('Status')" [class]="'clickable' + (sortedColumn === 'Status' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Status</th>
+                  <th (click)="sortColumn('SatutsDismantle')" [class]="'clickable' + (sortedColumn === 'SatutsDismantle' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Dismantle</th>
+                  <th (click)="sortColumn('SatutsBButon')" [class]="'clickable' + (sortedColumn === 'SatutsBButon' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Buton satuts</th>
+                  <th (click)="sortColumn('SatutsBatterie')" [class]="'clickable' + (sortedColumn === 'SatutsBatterie' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Satuts Batterie</th>
+                  <th (click)="sortColumn('SensorValue')" [class]="'clickable' + (sortedColumn === 'SensorValue' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Sensor Value</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
+                  </tr>
               </thead>
               <tbody>
                 <tr>
@@ -256,10 +289,10 @@
               <thead>
                 <tr>
                   <th>Sensor Type</th>
-                  <th>Sensor Status</th>
-                  <th>SwitchStatus</th>
-                  <th>Battery Voltage</th>
-                  <th>Time</th>
+                  <th (click)="sortColumn('SensorStatus')" [class]="'clickable' + (sortedColumn === 'SensorStatus' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Sensor Status</th>
+                  <th (click)="sortColumn('SwitchStatus')" [class]="'clickable' + (sortedColumn === 'SwitchStatus' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Switch Status</th>
+                  <th (click)="sortColumn('Voltage')" [class]="'clickable' + (sortedColumn === 'Voltage' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Voltage</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
                  
                 </tr>
               </thead>

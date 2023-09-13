@@ -14,8 +14,15 @@ export class DecodersComponent implements OnInit {
   sensorData: any;
   sortedColumn: string;
   isSortReversed: boolean;
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
+  totalPages: number;
+  paginatedData: any[];
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) { }
+
+  constructor(private http: HttpClient, private route: ActivatedRoute) { this.currentPage = 1;
+    this.itemsPerPage = 20; }
   ngOnInit(): void {
     console.log('DecodersComponent initialized');
     this.route.paramMap.subscribe(params => {
@@ -35,6 +42,9 @@ export class DecodersComponent implements OnInit {
           (data: any[]) => {
             this.sensorData = data;
            // Log the received data
+           this.totalItems = this.sensorData.length; // Set the total number of items
+           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage); // Calculate the total number of pages
+          this.paginateData(); // Call the paginateData function to display the data for the current page
           },
           (error: any) => {
             console.error(error);
@@ -59,9 +69,28 @@ export class DecodersComponent implements OnInit {
         this.sensorData = sortBy(this.sensorData, [column]);
       }
     }
+    this.currentPage = 1;
+    this.paginateData(); // Call the paginateData function after sorting the data
+  }
+  
+  changePage(page: number): void {
+    this.currentPage = page;
+    this.paginateData();
+  }
+  
+  paginateData(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+  
+    // Check if the startIndex is within the valid range
+    if (startIndex >= 0 && startIndex < this.totalItems) {
+      // Slice the sensorData array based on the startIndex and endIndex
+      this.paginatedData = this.sensorData.slice(startIndex, endIndex);
+    } else {
+      // If the startIndex is out of range or no data available, set the paginatedData to an empty array
+      this.paginatedData = [];
+    }
   }
   
   
-  
-    
 }
