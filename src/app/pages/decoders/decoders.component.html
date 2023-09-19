@@ -168,6 +168,20 @@
       </div>           
       <ng-container *ngFor="let sensor of paginatedData">
         <ng-container [ngSwitch]="sensor.type">
+          <div *ngSwitchCase="'triphase'">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Sensor Type</th>
+                  </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{sensor.type}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div *ngSwitchCase="'AN-305A'">
             <table class="table table-bordered table-hover">
               <thead>
@@ -337,10 +351,12 @@
               </tbody>
             </table>
           </div>
+          
 
           <div *ngSwitchDefault>
             <h2>Unsupported Sensor Type</h2>
             <p>This sensor type is not supported.</p>
+            <p>Received sensor type: {{ sensor.type }}</p>
           </div>
         </ng-container>
       </ng-container>

@@ -140,7 +140,7 @@
     "ts-node": "3.2.2",
     "tslint": "^5.20.1",
     "tslint-language-service": "^0.9.9",
-    "typescript": "^3.5.3"
+    "typescript": "~3.5.3"
   },
   "description": "",
   "homepage": "",

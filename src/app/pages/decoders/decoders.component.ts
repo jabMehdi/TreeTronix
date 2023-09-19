@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { isNumber, reverse, sortBy,isNaN } from 'lodash';
+import { Sensor } from '../model/sensor';
 
 
 @Component({
@@ -12,6 +13,7 @@ import { isNumber, reverse, sortBy,isNaN } from 'lodash';
 export class DecodersComponent implements OnInit {
   sensorCode: string;
   sensorData: any;
+  sensorType: string;
   sortedColumn: string;
   isSortReversed: boolean;
   currentPage: number;
@@ -36,22 +38,46 @@ export class DecodersComponent implements OnInit {
   getSensorData(sensorId: string): void {
     console.log(this.sensorCode);
     console.log(sensorId);
+    
     if (sensorId) {
-      this.http.post<any[]>(`/api/sensors/sensor/data/${this.sensorCode}/${sensorId}`, {})
-        .subscribe(
-          (data: any[]) => {
-            this.sensorData = data;
-           // Log the received data
-           this.totalItems = this.sensorData.length; // Set the total number of items
-           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage); // Calculate the total number of pages
-          this.paginateData(); // Call the paginateData function to display the data for the current page
-          },
-          (error: any) => {
-            console.error(error);
-          }
-        );
+      // Check if the sensorCode is for the 'triphase' sensor
+      if (this.sensorCode === "004A77012404D2C0") {
+        console.log("yo yo bitchesss !!! \n");
+        this.http.post<any[]>(`/api/sensors/sensor/data/${this.sensorCode}/${sensorId}`, {})
+          .subscribe(
+            (Countersdata: any[]) => {
+        
+              this.sensorData = Countersdata; // Assuming 'Countersdata' is the correct property
+  
+              console.log("this is the data \n",this.sensorData );
+              
+              this.totalItems = this.sensorData.length; // Set the total number of items
+              this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage); // Calculate the total number of pages
+              this.paginateData(); // Call the paginateData function to display the data for the current page
+            },
+            (error: any) => {
+              console.error(error);
+            }
+          );
+      } else {
+        // For other sensors, use the standard 'sensorData'
+        this.http.post<any[]>(`/api/sensors/sensor/data/${this.sensorCode}/${sensorId}`, {})
+          .subscribe(
+            (data: any[]) => {
+              this.sensorData = data;
+              // Log the received data
+              this.totalItems = this.sensorData.length; // Set the total number of items
+              this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage); // Calculate the total number of pages
+              this.paginateData(); // Call the paginateData function to display the data for the current page
+            },
+            (error: any) => {
+              console.error(error);
+            }
+          );
+      }
     }
   }
+  
   
  
 
