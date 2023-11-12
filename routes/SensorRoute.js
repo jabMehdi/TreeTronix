@@ -10,7 +10,7 @@ var nodemailer = require("nodemailer");
 const moment = require("moment");
 
 //const lib = require('./FactoryRoute');
-
+const axios = require("axios");
 const lib = require("../app");
 const xxx = lib.socketId;
 const { spawn } = require("child_process");
@@ -156,13 +156,13 @@ router.post("/sensor", async (req, res) => {
   }
 });
 
-// find by code
+// find sensor by code
 router.post("/sensor/findByCode", verifyToken, async (req, res) => {
   try {
     const s = await Sensor.find({ code: req.body.code });
 
     if (s.length < 1) {
-      await res.json({ status: "err", message: "not found" });
+      res.json({ status: "err", message: "not found" });
       return;
     }
     res.json(s);
@@ -344,80 +344,6 @@ try {
 } catch (e) {
   console.log(e);
 }
-/*
-async function Decoded(obj) {
-  try {
-    let decodedPayload;
-    const device = await Sensor.findOne({ code: obj.DevEUI_uplink.DevEUI });
-    if (device === null) {
-      console.log("Unknown device!");
-    } else {
-      console.log("Device type:", device.type);
-
-      if (device.type === "SD-100") {
-        decodedPayload = DecoderSD100(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        console.log("Decoded payload from SD-100:", decodedPayload);
-        device.data.push(decodedPayload);
-        await device.save();
-      } else if (device.type === "AN-103A") {
-        decodedPayload = DecoderAN103A(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        console.log("Decoded payload from AN-103A:", decodedPayload);
-        device.data.push(decodedPayload);
-        await device.save();
-      } else if (device.type === "AN-303") {
-        decodedPayload = DecoderAN303(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        device.data.push(decodedPayload);
-        await device.save();
-        console.log("Decoded payload from AN-303:", decodedPayload);
-      } else if (device.type === "AN-301") {
-        decodedPayload = DecoderAN301(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        device.data.push(decodedPayload);
-        await device.save();
-        console.log("Decoded payload from AN-301:", decodedPayload);
-      } else if (device.type === "AN-304C") {
-        decodedPayload = DecoderAN304C(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        device.data.push(decodedPayload);
-        await device.save();
-        console.log("Decoded payload from AN-304C:", decodedPayload);
-      } else if (device.type === "AN-305A") {
-        decodedPayload = DecoderAN305A(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        device.data.push(decodedPayload);
-        await device.save();
-        console.log("Decoded payload from AN-305A:", decodedPayload);
-      } else if (device.type === "AN-302") {
-        decodedPayload = DecoderAN302(
-          obj.DevEUI_uplink.payload_hex,
-          obj.DevEUI_uplink.DevEUI
-        );
-        device.data.push(decodedPayload);
-        await device.save();
-        console.log("Decoded payload from AN-302:", decodedPayload);
-      }
-    }
-  } catch (e) {
-    // console.log(e);
-  }
-}
-*/
-//---------------------------------------------------------------------
 
 async function check(obj) {
   try {
@@ -540,7 +466,7 @@ async function CryptMotion(data, DevEUI, time) {
   var tram = {
     SensorStatus: +SensorStatus,
     SwitchStatus: +SwitchStatus,
-    BatteryVolatage: +BatteryVolatage,
+    Volatage: +BatteryVolatage,
     time: FTime,
     type: "AN-304C",
   };
@@ -779,22 +705,6 @@ function hex2bin(hex) {
   return parseInt(hex, 16).toString(2).padStart(8, "0");
 }
 
-function cryptHassine(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.SType = data.substring(2, 4);
-  obj.FrameForm = data.substring(4, 6);
-  obj.Status = hex2bin(data.substring(6, 8));
-  //SensorValue = Date.parse(time);
-
-  obj.satutsBButon = obj.Status.substring(0, 3);
-  obj.satutsDismantle = obj.Status.substring(3, 4);
-  obj.satutsBatterie = obj.Status.substring(5, 7);
-  obj.satutsSensor = obj.Status.substring(7, 9);
-  console.log(obj);
-  return obj;
-}
-
 async function CryptXTreeEXTER(data, DevEUI, time) {
   //console.log(data);
   //console.log(DevEUI);
@@ -862,253 +772,271 @@ async function CryptXTreeEXTER(data, DevEUI, time) {
   updateClients_Soket(tram, updatedSensors);
 }
 
-async function CryptAN202A(data, DevEUI, time) {
-  //console.log(data);
-  //console.log(DevEUI);
+function getTrainUrl(Field) {
+  let trainUrl = "";
+  if (Field === "Temp") {
+    trainUrl = "http://localhost:8000/trainTemp/";
+  } else if (Field === "Hum") {
+    trainUrl = "http://localhost:8000/trainHum/";
+  } else if (Field === "Volt") {
+    trainUrl = "http://localhost:8000/trainVol/";
+  } else if (Field === "Com") {
+    trainUrl = "http://localhost:8000/trainCom/";
+  }
+  return trainUrl;
+}
+router.post("/sensor/findByCodeAndTrain", async (req, res) => {
+  const sensorCode = req.body.code;
+  const Field = req.body.field;
+  try {
+    const sensor = await Sensor.findOne({ code: sensorCode });
+    console.log("Sensor Type:", sensor.type);
 
-  SensorType = parseInt(data.substring(0, 2), 16);
-  FrameType = parseInt(data.substring(2, 4), 16);
-  BatteryVoltage = parseInt(data.substring(4, 6), 16);
-  tempStatus = parseInt(data.substring(6, 8), 16);
-  temp = parseInt(data.substring(8, 12), 16) / 10;
-  humStatus = parseInt(data.substring(12, 14), 16);
+    let trainUrl = getTrainUrl(Field);
+    console.log("TrainUrl is:", trainUrl);
 
-  hum = parseInt(data.substring(14, 18), 16) / 10;
-
-  voltage = parseInt(data.substring(18, 22), 16) / 100;
-
-  var tm = Date.parse(time);
-  var time = tm.toLocaleString();
-
-  /* console.log("Time: " + tm)
-     console.log('Temperature: ', temp);
-     console.log('Humidity', hum);
-     console.log('Battery level', batterie);*/
-
-  tram = {
-    DeviceID: +DeviceID,
-    Frameformat: +Frameformat,
-    Antidismantle: Antidismantle,
-    tempStatus: +tempStatus,
-    tempValues: +temp,
-    humStatus: +humStatus,
-    humValues: +hum,
-    voltage: +voltage,
-    time: +time,
-    type: "AN-103A",
-  };
-
-  console.log("-------------THE CRUNCH-------------");
-  console.log("AN-103A");
-  console.log("-------------THE CRUNCH-------------");
-
-  var email;
-  Alert.find({}, function (err, list) {
-    if (err) {
-      console.log("alert error");
+    let dataToSend = {};
+    if (sensor.type === "triphase") {
+      dataToSend = sensor.ConsomationTripahse.map((dataEntry) => ({
+        ComActiveTotal: dataEntry.ComActiveTotal,
+        time: dataEntry.time,
+      }));
     } else {
-      console.log("alert: " + list);
-
-      for (i = 0; i < list.length; i++) {
-        email = list[i].email;
-        if (temp > list[i].min && temp < list[i].max) {
-          console.log("no alert to be send");
-        } else {
-          console.log(
-            "alert to sent temp: " +
-              temp +
-              " max: " +
-              list[i].max +
-              " min: " +
-              list[i].min
-          );
-          console.log("list email: " + email);
-          sendEmail(email, temp, "", "has detected", list[i].deviceName);
-        }
-
-        console.log("alert list!" + i + " :" + list[i]);
-      }
+      //-----------------------------------
+      dataToSend = sensor.data.map((dataEntry) => ({
+        tempValues: dataEntry.tempValues,
+        humValues: dataEntry.humValues,
+        voltage: dataEntry.voltage,
+        time: dataEntry.time,
+      }));
     }
-  });
-
-  await Sensor.updateMany({ code: DevEUI }, { $push: { data: tram } });
-  const updatedSensors = await Sensor.find({ code: DevEUI });
-  updateClients_Soket(tram, updatedSensors);
-}
-
-function temphum103acrypt(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.FrameForm = data.substring(2, 4);
-  obj.SDismantle = data.substring(4, 6);
-  obj.STemp = data.substring(6, 8);
-  obj.Temp1 = hex2bin(data.substring(8, 10));
-  obj.Temp2 = hex2bin(data.substring(10, 12));
-  obj.SHum = data.substring(12, 14);
-  obj.HumValue1 = hex2bin(data.substring(14, 16));
-  obj.HumValue2 = hex2bin(data.substring(16, 18));
-  obj.HighTemp = parseInt(obj.Temp1, 2);
-  obj.LowTemp = parseInt(obj.Temp2, 2);
-  obj.TempFinal = `${obj.HighTemp}${obj.LowTemp}` / 10;
-  obj.HumFinal =
-    `${(parseInt(obj.HumValue1), 2)}${(parseInt(obj.HumValue2), 2)}` / 10;
-  console.log(obj);
-  return obj;
-}
-
-/* function cryptHassine305a(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.FrameType = data.substring(2, 4);
-  obj.STamper = data.substring(4, 6);
-  obj.SDoorContact = data.substring(6, 8);
-  obj.BatteryLevel = parseInt(data.substring(8, 10), 16) / 10;
-
-  //SensorValue = Date.parse(time);
-
-  console.log(obj);
-  return obj;
-} */
-
-function cryptHassinean304c(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.FrameType = data.substring(2, 4);
-  obj.SSensor = data.substring(4, 6);
-  obj.SDismantle = data.substring(6, 8);
-  obj.BatteryLevel = parseInt(data.substring(8, 10), 16) / 10;
-
-  //SensorValue = Date.parse(time);
-  console.log(obj);
-  return obj;
-}
-
-function cryptHassineLT2(data, DevEUI, time) {
-  obj = {};
-  obj.AVI1 = parseInt(data.substring(0, 2), 16) / 1000;
-  obj.AVI2 = parseInt(data.substring(2, 4), 16) / 1000;
-  obj.ACI1 = parseInt(data.substring(4, 6), 16) / 1000;
-  obj.ACI2 = parseInt(data.substring(6, 8), 16) / 1000;
-  obj.Status = parseInt(data.substring(6, 8), 2);
-  obj.RO1 = obj.status.substring(0, 1);
-  obj.RO2 = obj.status.substring(1, 2);
-  obj.DI3 = obj.status.substring(2, 3);
-  obj.DI2 = obj.status.substring(3, 4);
-  obj.DI1 = obj.status.substring(4, 5);
-  obj.DI22 = obj.status.substring(5, 6);
-
-  console.log(obj);
-  return obj;
-}
-
-function cryptHassine303(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.FrameForm = data.substring(2, 4);
-  obj.SDismantle = data.substring(4, 6);
-  obj.STemp = data.substring(6, 8);
-  obj.Temp1 = hex2bin(data.substring(8, 10));
-  obj.Temp2 = hex2bin(data.substring(10, 12));
-  obj.SHum = data.substring(12, 14);
-  obj.HumValue1 = hex2bin(data.substring(14, 18));
-  pbj.HumValue2 = hex2bin(data.substring(14, 18));
-  //SensorValue = Date.parse(time);
-
-  obj.HighTemp = parseInt(obj.Temp1, 2);
-  obj.LowTemp = parseInt(obj.Temp2, 2);
-  obj.TempFinal = `${obj.LowTemp}${obj.HighTemp}`;
-  obj.HumFinal = `${(parseInt(obj.HumValue2), 2)}${
-    (parseInt(obj.HumValue1), 2)
-  }`;
-
-  console.log(obj);
-  return obj;
-}
-
-function cryptHassine301(data, DevEUI, time) {
-  obj = {};
-  obj.IdSensor = data.substring(0, 2);
-  obj.FrameType = data.substring(2, 4);
-  obj.AlarmState = data.substring(4, 6);
-  obj.SDismantle = data.substring(6, 8);
-  obj.BatteryLevel = parseInt(data.substring(8, 10), 16) / 10;
-
-  //SensorValue = Date.parse(time);
-
-  console.log(obj);
-  return obj;
-}
-
-async function CryptXtree(data, DevEUI, time) {
-  //console.log(data);
-  //console.log(DevEUI);
-
-  temp = parseInt(data.substring(0, 4), 16) / 100;
-  hum = parseInt(data.substring(4, 8), 16) / 100;
-  v = parseInt(data.substring(8, 10), 16);
-  batterie = ((v - 30) / 12) * 100;
-  const FTime = moment(time).format("YYYY-MM-DD HH:mm:ss");
-
-  /* console.log("Time: " + tm)
-     console.log('Temperature: ', temp);
-     console.log('Humidity', hum);
-     console.log('Battery level', batterie);*/
-  tram = {
-    energy: 6,
-    type: "Sensor",
-    state: "",
-    time: +time,
-    humValues: +hum,
-    tempValues: +temp,
-    batteryLevel: +batterie,
-  };
-  console.log("temperature: " + temp);
-  var email;
-  Alert.find({}, function (err, list) {
-    if (err) {
-      console.log("alert error");
-    } else {
-      console.log("alert: " + list);
-
-      for (i = 0; i < list.length; i++) {
-        email = list[i].email;
-        if (temp > list[i].min && temp < list[i].max) {
-          console.log("no alert to be send");
-        } else {
-          console.log(
-            "alert to sent temp: " +
-              temp +
-              " max: " +
-              list[i].max +
-              " min: " +
-              list[i].min
-          );
-          console.log("list email: " + email);
-          sendEmail(email, temp, "", "has detected", list[i].deviceName);
-        }
-
-        console.log("alert list!" + i + " :" + list[i]);
-      }
-    }
-  });
-
-  const sensors = await Sensor.find({ code: DevEUI });
-  for (const sensor of sensors) {
-    sensor.data.push(tram);
+    console.log("Data to Send:", dataToSend);
+    const response = await axios.post(trainUrl, dataToSend, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response :", response.data);
+    sensor.model = response.data;
     await sensor.save();
-    updateClients_Soket(tram, sensor);
+
+    return res.json({
+      status: "success",
+      message: `Training Complete for field: ${req.body.field}`,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res
+      .status(500)
+      .json({ status: "err", message: "Internal server error" });
+  }
+});
+
+async function trainSensorModel(sensorCode, Field) {
+  try {
+    const sensor = await Sensor.findOne({ code: sensorCode });
+    console.log("Sensor Type:", sensor.type);
+
+    let trainUrl = getTrainUrl(Field);
+    console.log("TrainUrl is:", trainUrl);
+
+    let dataToSend = {};
+    if (sensor.type === "triphase") {
+      dataToSend = sensor.ConsomationTripahse.map((dataEntry) => ({
+        ComActiveTotal: dataEntry.ComActiveTotal,
+        time: dataEntry.time,
+      }));
+    } else {
+      //-----------------------------------
+      dataToSend = sensor.data.map((dataEntry) => ({
+        tempValues: dataEntry.tempValues,
+        humValues: dataEntry.humValues,
+        voltage: dataEntry.voltage,
+        time: dataEntry.time,
+      }));
+    }
+    console.log("Data to Send:", dataToSend);
+
+    const response = await axios.post(trainUrl, dataToSend, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response :", response.data);
+    sensor.model = response.data;
+    await sensor.save();
+    return {
+      status: "success",
+      message: `Training Complete for field: ${Field}`,
+    };
+  } catch (error) {
+    return { status: "err", message: "Internal server error" };
   }
 }
 
+router.post("/sensor/findByCodeAndTest", async (req, res) => {
+  try {
+    const sensorCode = req.body.code;
+    const Field = req.body.field;
+    //---------------------------------------------------------------------
+
+    //--------------------------------------------------------------------
+    const trainResult = await trainSensorModel(sensorCode, Field);
+    if (trainResult.status !== "success") {
+      return res.status(500).json(trainResult);
+    }
+    // Find the sensor by code
+    const sensor = await Sensor.findOne({ code: sensorCode });
+    if (!sensor) {
+      return res
+        .status(404)
+        .json({ status: "err", message: "Sensor not found" });
+    }
+
+    if (Field === "Temp") {
+      url = "http://localhost:8000/TestTemp/";
+    } else if (Field === "Hum") {
+      url = "http://localhost:8000/TestHum/";
+    } else if (Field === "Volt") {
+      url = "http://localhost:8000/TestVol/";
+    } else if (Field === "Com") {
+      url = "http://localhost:8000/TestCom/";
+    }
+
+    // Prepare the dataToSend object in the format expected by Django
+    let X = null;
+    // Prepare the dataToSend object in the format expected by Django
+    if (sensor.type === "triphase") {
+      X = sensor.ConsomationTripahse;
+    } else {
+      X = sensor.data;
+    }
+    const dataToSend = X;
+    console.log("Data To Send -------------- : \n\n");
+    // Serialize the model to a binary Buffer and then encode as Base64
+    const modelData = Buffer.from(sensor.model, "binary").toString("base64");
+    // Log the content of modelData
+
+    // Send the request to Django with the sensor data and model
+    try {
+      const response = await axios.post(
+        url,
+        {
+          data: dataToSend,
+          model: modelData, // Send the binary model data
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const responseData = response.data;
+      console.log("Response Data: ", responseData);
+
+      return res.json({
+        status: "success",
+        message: `Training & Testing Complete for field: ${req.body.field}`,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return res
+        .status(500)
+        .json({ status: "err", message: "Internal server error" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ status: "err", message: "Internal server error" });
+  }
+});
+
+router.post("/sensor/findByCodeAndPred", async (req, res) => {
+  try {
+    const sensorCode = req.body.code;
+    const Field = req.body.field;
+    const Pdate = req.body.date;
+    const trainResult = await trainSensorModel(sensorCode, Field);
+    if (trainResult.status !== "success") {
+      return res.status(500).json(trainResult);
+    }
+
+    console.log("Date and time ????? -------------- : ", Pdate);
+    // Find the sensor by code
+    const sensor = await Sensor.findOne({ code: sensorCode });
+
+    if (!sensor) {
+      return res
+        .status(404)
+        .json({ status: "err", message: "Sensor not found" });
+    }
+
+    if (Field === "Temp") {
+      url = "http://localhost:8000/PredTemp/";
+    } else if (Field === "Hum") {
+      url = "http://localhost:8000/PredHum/";
+    } else if (Field === "Vol") {
+      url = "http://localhost:8000/PredVol/";
+    } else if (Field === "Com") {
+      url = "http://localhost:8000/PredCom/";
+    }
+    let dataToSend = {};
+    // Prepare the dataToSend object in the format expected by Django
+    if (sensor.type === "triphase") {
+      dataToSend = sensor.ConsomationTripahse;
+    } else {
+      dataToSend = sensor.data;
+    }
+
+    // Serialize the model to a binary Buffer
+    // Serialize the model to a binary Buffer and then encode as Base64
+    const modelData = Buffer.from(sensor.model, "binary").toString("base64");
+    // Log the content of modelData
+    // Send the request to Django with the sensor data and model
+    try {
+      const response = await axios.post(
+        url,
+        {
+          data: dataToSend,
+          model: modelData, // Send the binary model data
+          date: Pdate,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const responseData = response.data;
+      console.log("Response Data: ", responseData);
+
+      return res.json({
+        status: "success",
+        message: `Training & Prediction Process Complete for field: ${req.body.field}`,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return res
+        .status(500)
+        .json({ status: "err", message: "Internal server error" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ status: "err", message: "Internal server error" });
+  }
+});
+
 async function compteurCrypt(Crypteddata, DevEUI) {
-  /*   console.log('data compteur ', Crypteddata);
-       console.log('dev ui', DevEUI);
-   */
   var dataToSend = null;
-  const python3 = await spawn("python3", [
+  const python3 = await spawn("python", [
     "routes/decrypt.py",
     Crypteddata,
-    "python3",
+    "python",
   ]);
   python3.stdout.on("data", function (data) {
     dataToSend = data.toString();
@@ -1127,15 +1055,16 @@ async function compteurCrypt(Crypteddata, DevEUI) {
       }
 
       const datatram = JSON.parse(dataToSend);
-      //console.log(datatram);
+      console.log("*****************************", datatram);
       UpdateCounters(datatram, DevEUI);
-      // console.log(obj.Address);
+      //console.log(obj.Address);
     }
   });
 }
 
 async function UpdateCounters(val, code) {
   Sens = await Sensor.findOne({ code: code });
+  val.type = "triphase";
   delete val.code;
   val.time = Date.now();
   if (val.DataIdentification == "0000FF00") {
@@ -1154,6 +1083,9 @@ async function UpdateCounters(val, code) {
     //  console.log('actif power');
     Sens.ActivePowerTipahse.push(val);
   }
+
+  console.log("----------XXXXXXXXXX sensor type: ", val.type);
+
   Sens.Countersdata.push(val); // delete
   await Sens.save();
   updateClients_Soket(val, Sens);
@@ -1202,9 +1134,12 @@ router.post("/sensor/Data_remID/:id", async (req, res) => {
       return res.status(404).json({ error: "Sensor not found" });
     }
     console.log("Found Sensor:", sensor);
-
-    // Delete the sensor's data
-    sensor.data = [];
+    if (sensor.type != "triphase")
+      // Delete the sensor's data
+      sensor.data = [];
+    if (sensor.type === "triphase") {
+      sensor.Countersdata = [];
+    }
     await sensor.save();
 
     return res.status(200).json({ message: "Data deleted successfully" });
@@ -1221,12 +1156,21 @@ router.post("/sensor/Data_remAll", async (req, res) => {
     // Iterate over each sensor
     for (const sensor of sensors) {
       // Get the length of the data array
-      const dataLength = sensor.data.length;
 
-      // Check if the data array has more than 50 objects
-      if (dataLength > 50) {
-        // Keep only the last 50 objects in the data array
-        sensor.data = sensor.data.slice(dataLength - 50);
+      const dataLength = sensor.data.length;
+      const CountersLength = sensor.Countersdata.length;
+      if (sensor.type != "triphase") {
+        // Check if the data array has more than 50 objects
+        if (dataLength > 50) {
+          // Keep only the last 50 objects in the data array
+          sensor.data = sensor.data.slice(dataLength - 50);
+        }
+      }
+      if (sensor.type === "triphase") {
+        if (CountersLength > 50) {
+          // Keep only the last 50 objects in the data array
+          sensor.Countersdata = sensor.Countersdata.slice(dataLength - 50);
+        }
       }
 
       // Save the updated sensor
@@ -1268,18 +1212,20 @@ router.post("/sensor/data/:code/:sensorId", async (req, res) => {
   try {
     const sensorCode = req.params.code;
     const sensorId = req.params.sensorId;
-
     // Find the sensor by code and unique identifier
-    const sensor = await Sensor.findOne({ code: sensorCode, _id: sensorId });
 
+    const sensor = await Sensor.findOne({ code: sensorCode, _id: sensorId });
     if (!sensor) {
       return res.status(404).json({ message: "Sensor not found" });
     }
-    // Retrieve the data array of the sensor
     const sensorData = sensor.data;
+    const sensorCounter = sensor.Countersdata;
 
-    // Return the sensor data
-    res.json(sensorData);
+    if (sensorCode != "004A77012404D2C0") {
+      res.json(sensorData);
+    } else {
+      res.json(sensorCounter);
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -1403,340 +1349,17 @@ const chat = io.of("/Sensor/UpdateValue").on("connection", (socket) => {
   });
 });
 
-/*
-//   Decoder for  SD100
-function DecoderSD100(bytes, port) {
-  var decoded = {};
-
-  decoded.sensorName = "SD100";
-  if (checkReportSync(bytes) == false) return;
-
-  var status = byteToUint16Swap(bytes.slice(2, 4));
-
-  decoded.voltageAlarm = (status >> 8) & 0x01;
-  decoded.tamperAlarm = (status >> 4) & 0x01;
-  decoded.faultAlarm = (status >> 2) & 0x01;
-  decoded.smokeAlarm = (status >> 1) & 0x01;
-
-  var dataLen = bytes[4];
-  var i = 5;
-
-  while (dataLen--) {
-    var type = bytes[i];
-    i++;
-    switch (type) {
-      case 0x88: // battery /mv
-        decoded.battery = byteToUint16Swap(bytes.slice(i, i + 2));
-        i += 2;
-        break;
-      case 0x03: // temperature /0.1℃
-        decoded.temperature = byteToUint16Swap(bytes.slice(i, i + 2)) / 10;
-        i += 2;
-        break;
-      case 0xff: // report interval /min
-        decoded.reportInterval = byteToUint16Swap(bytes.slice(i, i + 2));
-        i += 2;
-        break;
-    }
+router.post("/sensor/nbS", verifyToken, async (req, res) => {
+  try {
+    const count = await Sensor.countDocuments({
+      userId: req.id,
+    });
+    console.log("Number of sensors:", count);
+    res.json({ count: count });
+  } catch (err) {
+    res.json({ message: err.message });
   }
-  return decoded;
-}
-
-function byteToUint16Swap(bytes) {
-  var value = (bytes[1] << 8) | bytes[0];
-  return value;
-}
-
-function checkReportSync(bytes) {
-  if (bytes[0] == 0x01 && bytes[1] == 0x28) {
-    return true;
-  }
-  return false;
-}
-
-//END OF DECODER
-
-// DECODER OF AN103A------------------------------------------------------
-
-function DecoderAN103A(bytes, port) {
-  var decoded = {};
-
-  decoded.sensorName = "AN103A";
-  decoded.deviceId = 0x01; // fixed value
-
-  switch (bytes[1]) {
-    case 0x00:
-      decoded.frameFormat = "Heartbeat frame";
-      break;
-    case 0x01:
-      decoded.frameFormat = "Data frame";
-      break;
-    default:
-      decoded.frameFormat = "Unknown";
-  }
-
-  decoded.antiDismantle = bytes[2] === 0x01 ? "Dismantled" : "Not dismantled";
-
-  switch (bytes[3]) {
-    case 0x00:
-      decoded.tempStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.tempStatus = "High temperature threshold alarm";
-      break;
-    case 0x02:
-      decoded.tempStatus = "Low temperature threshold alarm";
-      break;
-    default:
-      decoded.tempStatus = "Unknown";
-  }
-
-  var temperature = ((bytes[4] << 8) | bytes[5]) / 10;
-  if (bytes[4] & 0x80) {
-    // check the sign bit
-    temperature = -(0x1000 - temperature); // convert to signed int
-  }
-  decoded.temperature = temperature;
-
-  switch (bytes[6]) {
-    case 0x00:
-      decoded.humidityStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.humidityStatus = "High humidity";
-      break;
-    case 0x02:
-      decoded.humidityStatus = "Low humidity";
-      break;
-    default:
-      decoded.humidityStatus = "Unknown";
-  }
-
-  decoded.humidity = ((bytes[7] << 8) | bytes[8]) / 10;
-
-  var power = ((bytes[9] << 8) | bytes[10]) / 100;
-  decoded.powerStatus = (bytes[9] & 0x80) === 0x80 ? "Low power" : "Normal";
-  decoded.power = power;
-
-  return decoded;
-}
-
-// end of decoder-------------------------------------------------------------------------------------
-
-// AN304C--------------------
-function DecoderAN304C(bytes, port) {
-  var decoded = {};
-  decoded.sensorName = "AN304C";
-  decoded.deviceId = 0x01; // fixed value
-  decoded.sensorType = "AN-304C"; // fixed value
-
-  decoded.sensorStatus = bytes[2] === 0x01 ? "Triggered" : "Not Triggered";
-  decoded.antiDismantle = bytes[3] === 0x01 ? "Dismantled" : "Not Dismantled";
-  decoded.switchStatus = bytes[4] === 0x01 ? "On" : "Off";
-
-  decoded.batteryVoltage = (bytes[5] / 10).toFixed(1);
-
-  return decoded;
-}
-
-// END------------------------
-
-// Decoder for AN302 GAS-----------------------------
-function DecoderAN302(bytes) {
-  var decoded = {};
-
-  decoded.sensorName = "AN302";
-  decoded.deviceId = 0x02; // fixed value
-  decoded.sensorType = 0x02; // fixed value
-
-  switch (bytes[2]) {
-    case 0x00:
-      decoded.frameFormat = "Heartbeat packet";
-      break;
-    case 0x01:
-      decoded.frameFormat = "Status change packet";
-      break;
-    default:
-      decoded.frameFormat = "Unknown";
-  }
-
-  var statusByte = bytes[3];
-  var sensorStatus = (statusByte & 0xc0) >> 6;
-  switch (sensorStatus) {
-    case 0x00:
-      decoded.sensorStatus = "Normal status";
-      break;
-    case 0x01:
-      decoded.sensorStatus = "Alarm status";
-      break;
-    case 0x02:
-      decoded.sensorStatus = "Failure status";
-      break;
-    case 0x03:
-      decoded.sensorStatus = "Warm up status";
-      break;
-    default:
-      decoded.sensorStatus = "Unknown";
-  }
-
-  var batteryStatus = (statusByte & 0x30) >> 4;
-  switch (batteryStatus) {
-    case 0x00:
-      decoded.batteryStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.batteryStatus = "Low power";
-      break;
-    default:
-      decoded.batteryStatus = "Reserved for future use";
-  }
-
-  var antiDismantleStatus = (statusByte & 0x08) >> 3;
-  decoded.antiDismantleStatus =
-    antiDismantleStatus === 0x00 ? "Normal" : "Dismantled";
-
-  var buttonStatus = statusByte & 0x07;
-  switch (buttonStatus) {
-    case 0x00:
-      decoded.buttonStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.buttonStatus = "On";
-      break;
-    case 0x02:
-      decoded.buttonStatus = "Mute";
-      break;
-    default:
-      decoded.buttonStatus = "Reserved for future use";
-  }
-
-  var sensorValue = (bytes[4] << 8) | bytes[5];
-  decoded.sensorValue = sensorValue;
-
-  return decoded;
-}
-
-//----------------------END----------------------
-
-//-------------------AN303-----------------------
-function DecoderAN303(bytes) {
-  const decoded = {};
-
-  decoded.sensorName = "AN303";
-  // Device ID
-  decoded.deviceId = 0x01;
-
-  // Frame format
-  decoded.frameFormat = bytes[1] === 0x00 ? "Heartbeat frame" : "Data frame";
-
-  // Anti-dismantle
-  decoded.antiDismantle = bytes[2] === 0x01 ? "Dismantled" : "Not dismantle";
-
-  // Temperature status
-  switch (bytes[3]) {
-    case 0x00:
-      decoded.temperatureStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.temperatureStatus = "High temperature threshold alarm";
-      break;
-    case 0x02:
-      decoded.temperatureStatus = "Low temperature threshold alarm";
-      break;
-    default:
-      decoded.temperatureStatus = "Unknown";
-  }
-
-  // Temperature value
-  const temp = ((bytes[4] << 8) | bytes[5]) / 10;
-  decoded.temperatureValue = `${temp} °C`;
-
-  // Humidity status
-  switch (bytes[6]) {
-    case 0x00:
-      decoded.humidityStatus = "Normal";
-      break;
-    case 0x01:
-      decoded.humidityStatus = "High humidity";
-      break;
-    case 0x02:
-      decoded.humidityStatus = "Low humidity";
-      break;
-    default:
-      decoded.humidityStatus = "Unknown";
-  }
-
-  // Humidity value
-  const humidity = ((bytes[7] << 8) | bytes[8]) / 10;
-  decoded.humidityValue = `${humidity} %`;
-
-  // Voltage value
-  const voltage = ((bytes[9] << 8) | bytes[10]) / 100;
-  decoded.voltageValue = `${voltage} V`;
-
-  // Power status
-  const powerStatus = (bytes[9] & 0xf000) >> 12;
-  decoded.powerStatus = powerStatus === 0x00 ? "Normal" : "Low power";
-
-  return decoded;
-}
-//-------------------END------------------
-
-//----------------AN305A------------------
-function DecoderAN305A(bytes, port) {
-  var decoded = {};
-
-  decoded.sensorName = "AN305A";
-  // Sensor type
-  decoded.sensorType = bytes[0] === 0x08 ? "Default" : "Unknown";
-
-  // Frame type
-  switch (bytes[1]) {
-    case 0x03:
-      decoded.frameType = "Type A";
-      break;
-    case 0x01:
-      decoded.frameType = "Type B";
-      break;
-    case 0x02:
-      decoded.frameType = "Type C";
-      break;
-    default:
-      decoded.frameType = "Unknown";
-  }
-
-  // Tamper status
-  decoded.tamperStatus = bytes[2] === 0x01 ? "Tampered" : "Not Tampered";
-
-  // Door contact status
-  decoded.doorContactStatus = bytes[3] === 0x01 ? "Abnormal" : "Normal";
-
-  // Battery level
-  decoded.batteryLevel = (bytes[4] / 10).toFixed(1);
-
-  return decoded;
-}
-//----------------------END-------------------------
-
-//------------------Decoder for AN301
-function DecoderAN301(bytes, port) {
-  var decoded = {};
-  decoded.sensorName = "AN301";
-  decoded.frameType = bytes[1] === 0x00 ? "Heartbeat" : "Data";
-  decoded.alarmState =
-    bytes[2] === 0x00
-      ? "Without Alarm"
-      : bytes[2] === 0x01
-      ? "With Alarm"
-      : "Delay Reporting of Alarm";
-  decoded.dismantleState = bytes[3] === 0x00 ? "Not Dismantled" : "Dismantled";
-  decoded.voltage = (bytes[4] / 10).toFixed(1);
-  decoded.default = 0x01;
-
-  return decoded;
-}
-//-----------------------END------------------------
-*/
+});
 
 async function updateClients_Soket(data, Sensor) {
   console.log("SocketClients", SocketClients);

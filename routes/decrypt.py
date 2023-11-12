@@ -167,13 +167,13 @@ if ControlCode == '91' and DataIdentificationString == '34459337' : ##DTS150
     Terminator = FrameText[68:70]
     data = {
             'DataIdentification' : DataIdentification ,
-            'VoltagePhaseA': VoltagePhaseA ,
-             'VoltagePhaseB': VoltagePhaseB ,
-             'VoltagePhaseC': VoltagePhaseC ,
-             'CurrentPhaseA': CurrentPhaseA ,
-             'CurrentPhaseB' : CurrentPhaseB ,
-             'CurrentPhaseC' : CurrentPhaseC,
-             'Adress':Address
+            'VoltagePhaseA': float(VoltagePhaseA) ,
+             'VoltagePhaseB': float(VoltagePhaseB) ,
+             'VoltagePhaseC': float(VoltagePhaseC) ,
+             'CurrentPhaseA': float(CurrentPhaseA) ,
+             'CurrentPhaseB' : float(CurrentPhaseB) ,
+             'CurrentPhaseC' : float(CurrentPhaseC),
+             'Adress': Address
             }
     data_json = json.dumps(data)
     print(data_json)

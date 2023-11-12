@@ -8,7 +8,6 @@ const Sensor = require("../models/Sensor");
 const http = require("http").Server(express);
 const ioo = require("socket.io")(http);
 
-
 //get id user by token
 function verifyToken(req, res, next) {
   let payload;
@@ -50,7 +49,7 @@ router.post("/usine/add", verifyToken, async (req, res) => {
 
 // ajouter une zone à un usine
 router.put("/usine/addZone/:idFactory/:idZone", async (req, res) => {
-    console.log('-------------------------------------------------')
+  console.log("-------------------------------------------------");
   const zone = req.params.idZone;
   const fac = req.params.idFactory;
   Factory.findOneAndUpdate({ _id: fac }, { zoneId: zone }, (err, result) => {
@@ -210,6 +209,18 @@ router.post("/factory/updateZone/", verifyToken, async (req, res) => {
   }
   fac.save();
   await res.json(fac);
+});
+
+router.post("/factory/nbF", verifyToken, async (req, res) => {
+  try {
+    const count = await Factory.countDocuments({
+      userId: req.id,
+    });
+    console.log("Number of factories:", count);
+    res.json({ count: count });
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 });
 
 module.exports = router;
