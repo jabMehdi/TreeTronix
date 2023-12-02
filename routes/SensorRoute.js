@@ -599,19 +599,19 @@ async function CryptAN303(data, DevEUI, time) {
 
       for (i = 0; i < list.length; i++) {
         email = list[i].email;
-        if (temp > list[i].min && temp < list[i].max) {
+        if (TempValues > list[i].min && TempValues < list[i].max) {
           console.log("no alert to be send");
         } else {
           console.log(
             "alert to sent temp: " +
-              temp +
+              TempValues +
               " max: " +
               list[i].max +
               " min: " +
               list[i].min
           );
           console.log("list email: " + email);
-          sendEmail(email, temp, "", "has detected", list[i].deviceName);
+          sendEmail(email, TempValues, "", "has detected", list[i].deviceName);
         }
 
         console.log("alert list!" + i + " :" + list[i]);
@@ -774,20 +774,20 @@ async function CryptXTreeEXTER(data, DevEUI, time) {
 
 function getTrainUrl(Field) {
   let trainUrl = "";
-  if (Field === "Temp") {
+  if (Field === "Temperature") {
     trainUrl = "http://localhost:8000/trainTemp/";
-  } else if (Field === "Hum") {
+  } else if (Field === "Humidity") {
     trainUrl = "http://localhost:8000/trainHum/";
-  } else if (Field === "Volt") {
+  } else if (Field === "Voltage") {
     trainUrl = "http://localhost:8000/trainVol/";
-  } else if (Field === "Com") {
+  } else if (Field === "Consumption") {
     trainUrl = "http://localhost:8000/trainCom/";
   }
   return trainUrl;
 }
 router.post("/sensor/findByCodeAndTrain", async (req, res) => {
-  const sensorCode = req.body.code;
-  const Field = req.body.field;
+  const sensorCode = req.query.code;
+  const Field = req.query.field;
   try {
     const sensor = await Sensor.findOne({ code: sensorCode });
     console.log("Sensor Type:", sensor.type);
@@ -832,9 +832,9 @@ router.post("/sensor/findByCodeAndTrain", async (req, res) => {
   }
 });
 
-async function trainSensorModel(sensorCode, Field) {
+async function trainSensorModel(sensorType, Field) {
   try {
-    const sensor = await Sensor.findOne({ code: sensorCode });
+    const sensor = await Sensor.findOne({ type: sensorType });
     console.log("Sensor Type:", sensor.type);
 
     let trainUrl = getTrainUrl(Field);
@@ -876,43 +876,41 @@ async function trainSensorModel(sensorCode, Field) {
 
 router.post("/sensor/findByCodeAndTest", async (req, res) => {
   try {
-    const sensorCode = req.body.code;
-    const Field = req.body.field;
+    const sensorType = req.query.type;
+    const Field = req.query.field;
     //---------------------------------------------------------------------
 
     //--------------------------------------------------------------------
-    const trainResult = await trainSensorModel(sensorCode, Field);
+    const trainResult = await trainSensorModel(sensorType, Field);
     if (trainResult.status !== "success") {
       return res.status(500).json(trainResult);
     }
     // Find the sensor by code
-    const sensor = await Sensor.findOne({ code: sensorCode });
+    const sensor = await Sensor.findOne({ type: sensorType });
     if (!sensor) {
       return res
         .status(404)
         .json({ status: "err", message: "Sensor not found" });
     }
 
-    if (Field === "Temp") {
+    if (Field === "Temperature") {
       url = "http://localhost:8000/TestTemp/";
-    } else if (Field === "Hum") {
+    } else if (Field === "Humidity") {
       url = "http://localhost:8000/TestHum/";
-    } else if (Field === "Volt") {
+    } else if (Field === "Voltage") {
       url = "http://localhost:8000/TestVol/";
-    } else if (Field === "Com") {
+    } else if (Field === "Consumption") {
       url = "http://localhost:8000/TestCom/";
     }
 
     // Prepare the dataToSend object in the format expected by Django
     let X = null;
-    // Prepare the dataToSend object in the format expected by Django
     if (sensor.type === "triphase") {
       X = sensor.ConsomationTripahse;
     } else {
       X = sensor.data;
     }
     const dataToSend = X;
-    console.log("Data To Send -------------- : \n\n");
     // Serialize the model to a binary Buffer and then encode as Base64
     const modelData = Buffer.from(sensor.model, "binary").toString("base64");
     // Log the content of modelData
@@ -932,12 +930,44 @@ router.post("/sensor/findByCodeAndTest", async (req, res) => {
         }
       );
 
-      const responseData = response.data;
+      const responseData = JSON.parse(response.data.result);
       console.log("Response Data: ", responseData);
+
+      // Extract and format predictions
+      const formattedPredictions = responseData.map((prediction) => {
+        const time = new Date(prediction.time);
+        let predictionField;
+
+        // Choose the correct prediction field based on the "Field" value
+        if (Field === "Temperature") {
+          predictionField = "temperature_predictions";
+        } else if (Field === "Humidity") {
+          predictionField = "humidity_predictions";
+        } else if (Field === "Voltage") {
+          predictionField = "voltage_predictions";
+        } else if (Field === "Consumption") {
+          predictionField = "predictions";
+        }
+        console.log("Prediction Field:", predictionField); // Add this line to log the predictionField
+
+        // Check if the chosen predictionField is defined on the prediction object
+        if (predictionField && prediction[predictionField] !== undefined) {
+          // Return an object with time and prediction
+          return {
+            time: time.toISOString(),
+            value: prediction[predictionField],
+          };
+        } else {
+          console.error(`Invalid prediction field: ${predictionField}`);
+          // Return an object with time and a placeholder value
+          return { time: time.toISOString(), value: 0 }; // You can replace 0 with an appropriate default value
+        }
+      });
 
       return res.json({
         status: "success",
-        message: `Training & Testing Complete for field: ${req.body.field}`,
+        message: `Training & Testing Complete for field: ${req.query.field}`,
+        formattedPredictions,
       });
     } catch (error) {
       console.error("Error:", error);
@@ -955,52 +985,54 @@ router.post("/sensor/findByCodeAndTest", async (req, res) => {
 
 router.post("/sensor/findByCodeAndPred", async (req, res) => {
   try {
-    const sensorCode = req.body.code;
-    const Field = req.body.field;
+    const sensorType = req.query.type;
+    const Field = req.query.field;
     const Pdate = req.body.date;
-    const trainResult = await trainSensorModel(sensorCode, Field);
+
+    // Call trainSensorModel function
+    const trainResult = await trainSensorModel(sensorType, Field);
     if (trainResult.status !== "success") {
       return res.status(500).json(trainResult);
     }
 
-    console.log("Date and time ????? -------------- : ", Pdate);
-    // Find the sensor by code
-    const sensor = await Sensor.findOne({ code: sensorCode });
-
+    // Find the sensor by type
+    const sensor = await Sensor.findOne({ type: sensorType });
     if (!sensor) {
       return res
         .status(404)
         .json({ status: "err", message: "Sensor not found" });
     }
 
-    if (Field === "Temp") {
+    let url;
+    if (Field === "Temperature") {
       url = "http://localhost:8000/PredTemp/";
-    } else if (Field === "Hum") {
+    } else if (Field === "Humidity") {
       url = "http://localhost:8000/PredHum/";
-    } else if (Field === "Vol") {
+    } else if (Field === "Voltage") {
       url = "http://localhost:8000/PredVol/";
-    } else if (Field === "Com") {
+    } else if (Field === "Consumption") {
       url = "http://localhost:8000/PredCom/";
     }
-    let dataToSend = {};
-    // Prepare the dataToSend object in the format expected by Django
-    if (sensor.type === "triphase") {
-      dataToSend = sensor.ConsomationTripahse;
-    } else {
-      dataToSend = sensor.data;
-    }
 
-    // Serialize the model to a binary Buffer
+    // Prepare the dataToSend object in the format expected by Django
+    let X = null;
+    if (sensor.type === "triphase") {
+      X = sensor.ConsomationTripahse;
+    } else {
+      X = sensor.data;
+    }
+    const dataToSend = X;
+
     // Serialize the model to a binary Buffer and then encode as Base64
     const modelData = Buffer.from(sensor.model, "binary").toString("base64");
-    // Log the content of modelData
+
     // Send the request to Django with the sensor data and model
     try {
       const response = await axios.post(
         url,
         {
           data: dataToSend,
-          model: modelData, // Send the binary model data
+          model: modelData,
           date: Pdate,
         },
         {
@@ -1011,12 +1043,9 @@ router.post("/sensor/findByCodeAndPred", async (req, res) => {
       );
 
       const responseData = response.data;
-      console.log("Response Data: ", responseData);
 
-      return res.json({
-        status: "success",
-        message: `Training & Prediction Process Complete for field: ${req.body.field}`,
-      });
+      // Process the response and send it to the client
+      return res.json(responseData);
     } catch (error) {
       console.error("Error:", error);
       return res

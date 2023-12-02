@@ -79,7 +79,6 @@ router.post("/alert/add", verifyToken, async (req, res) => {
     a = await alert.save();
     res.json({ status: "ok", message: "alert add to data base" });
     return;
-    res.json({ status: "err", message: "alert already existe" });
   } catch (err) {
     res.json({ message: err.message });
   }

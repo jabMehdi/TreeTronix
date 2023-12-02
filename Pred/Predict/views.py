@@ -59,7 +59,7 @@ def trainCom_view(request):
             X = data_df[['timestamp_numerical', 'cumulative_mean']]
             y = data_df[['com']]
             print("Model In phase 2 !.")
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
 
             model = LinearRegression()
 
@@ -125,7 +125,7 @@ def trainHum_view(request):
             y = data_df['hum']
             X = X.dropna()
             y = y.iloc[X.index]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
             model = LinearRegression()
             model.fit(X_train, y_train)
             print("Model trained successfully !.")
@@ -189,7 +189,7 @@ def trainVol_view(request):
             nan_indices = ~np.isnan(X).flatten()
             X = X[nan_indices]
             y = y.iloc[nan_indices]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
             model = LinearRegression()
             model.fit(X_train, y_train)
             print("Model trained successfully !.")
@@ -252,7 +252,7 @@ def trainTemp_view(request):
             y = data_df['temp']
             X = X.dropna()
             y = y.iloc[X.index]
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
             model = LinearRegression()
             model.fit(X_train, y_train)
             print("Model trained successfully!")
@@ -676,13 +676,15 @@ def predict_temperature_view(request):
 
             # Convert the prediction_date_str to a datetime object
             prediction_date = parser.parse(prediction_date_str)
-
+            
             # Call the predict_temperature function to make predictions
             predicted_temperature = predict_temperature(loaded_model, data_df, prediction_date)
+           
 
             return JsonResponse({
                 'status': 'success',
                 'predicted_temperature': predicted_temperature
+                
             })
 
         except Exception as e:
@@ -719,8 +721,8 @@ def predict_humidity(model, data_df, prediction_date):
       new_row.fillna(data_df.select_dtypes(include=np.number).mean(), inplace=True)
     # Predict humidity using only temperature and humidity
     predicted_humidity = model.predict(new_row[['lagged_temperature', 'lagged_Hum']])
-
-    return predicted_humidity
+    predicted_humidity_list = predicted_humidity.tolist()
+    return predicted_humidity_list
 
 @api_view(['POST'])
 def predict_humidity_view(request):
@@ -782,11 +784,11 @@ def predict_humidity_view(request):
 
             # Call the predict_temperature function to make predictions
             predicted_humidity = predict_humidity(loaded_model, data_df, prediction_date)
-            predicted_humidity_list = predicted_humidity.tolist()
+     
 
             return JsonResponse({
                 'status': 'success',
-                'predicted_humidity': predicted_humidity_list
+                'predicted_humidity': predicted_humidity
             })
 
         except Exception as e:
@@ -822,7 +824,8 @@ def predict_voltage(model, data_df, prediction_date):
     lagged_voltage = np.array([lagged_voltage]).reshape(1, -1)
     # Predict the voltage for the new date
     predicted_voltage = model.predict(lagged_voltage)
-    return predicted_voltage
+    predicted_voltage_list = predicted_voltage.tolist()
+    return predicted_voltage_list
 
 
 @api_view(['POST'])
@@ -884,11 +887,10 @@ def predict_voltage_view(request):
 
             # Call the predict_temperature function to make predictions
             predicted_voltage = predict_voltage(loaded_model, data_df, prediction_date)
-            predicted_voltage_list = predicted_voltage.tolist()
 
             return JsonResponse({
                 'status': 'success',
-                'predicted_voltage': predicted_voltage_list
+                'predicted_voltage': predicted_voltage
             })
 
         except Exception as e:
@@ -920,8 +922,8 @@ def predict_Com(model, data_df, prediction_date):
       input_data.fillna(data_df.select_dtypes(include=np.number).mean(), inplace=True)
     # Predict consumption at the provided date
     prediction = model.predict(input_data[['timestamp_numerical', 'cumulative_mean']])
-
-    return prediction[0][0]
+    prediction_list = prediction.tolist()
+    return prediction_list
 
 
 @api_view(['POST'])
@@ -982,7 +984,7 @@ def predict_Com_view(request):
             predicted_consumption = predict_Com(loaded_model, data_df, prediction_date)
             return JsonResponse({
                 'status': 'success',
-                'predicted_Com': [predicted_consumption]
+                'predicted_consumption': predicted_consumption
             })
 
         except Exception as e:
