@@ -1,6 +1,6 @@
 <style>
   .title {
-      color: #3366ff;
+      color: #ffff;
       justify-content: center; /* Horizontal center */
       text-align: center; /* Center text */
       margin-top: -5 px;
@@ -81,42 +81,7 @@
                     <ul class="list">
                       <li *ngFor="let sensor of data1" class="list-item">
                         {{ sensor.name }} (Type: {{ sensor.type }})
-
-                        <ng-container [ngSwitch]="sensor.type">
-                          <div *ngSwitchCase="'AN-305A'">
-                                  {{sensor.BatteryLevel / 10}}V
-                          </div>
-                
-                          <div *ngSwitchCase="'AN-103A'">
-                                  {{sensor.voltage}}V
-                          </div>
-                
-                          <div *ngSwitchCase="'AN-301'">
-                                  {{sensor.Voltage / 10}}V
-                          </div>
-                
-                          <div *ngSwitchCase="'AN-303'">
-                                  {{sensor.Voltage}}V
-                                
-                          </div>
-                
-                          <div *ngSwitchCase="'AN-302'">
-                                  {{sensor.SatutsBatterie}}V
-                            
-                          </div>
-                
-                          <div *ngSwitchCase="'AN-304C'">
-                                  {{sensor.BatteryVolatage}}V
-                               
-                          </div>
-                
-                          <div *ngSwitchCase="'SD-100'">
-                                  {{sensor.battery / 1000}}V
-                          </div>
-                          
-
-                          </ng-container>
-                      </li>
+                     </li>
                     </ul>
                   </td>
                 </tr>                

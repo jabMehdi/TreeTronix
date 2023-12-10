@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 @Component({
   selector: 'app-delete-data-button',
   template: `
-    <button nbButton size="small" class="custom-action" (click)="onDeleteData()">
+    <button nbButton size="small" class="btn btn-danger" (click)="onDeleteData()">
       Del
     </button>
   `,

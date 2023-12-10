@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {NbComponentStatus, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService} from '@nebular/theme';
 import {ToasterConfig} from 'angular2-toaster';
@@ -22,8 +22,11 @@ export class ReclamationComponent {
     message: new FormControl(),
     subject: new FormControl(),
   });
+  
+  
   //
   submitted = false;
+
 
   onSubmit() {
     this.submitted = true;
@@ -48,7 +51,7 @@ export class ReclamationComponent {
       } else {
         Swal.fire(
           'Success!',
-          'Your Reclamation is Sended with success.',
+          'Your Reclamation is Sent with success.',
           'success',
         );
         this.reclamationForm.reset();

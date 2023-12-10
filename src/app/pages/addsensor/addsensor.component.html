@@ -2,15 +2,23 @@
 <style>
   #madiv { width: 60%; }
   #madiv2 {position: center}
+   .header1 {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
 </style>
 
-<div class="col-9">
 
   <nb-card >
-    <nb-card-header >
-      <h1 style=" color: #3366ff ; text-align: center ;" >  Add Device </h1>
+    <nb-card-header class="header1">
+      <h1 style=" color: #ffff;
+      font-size: 24px;
+      font-family: Open Sans, sans-serif;" >  Add Device </h1>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-header>
       <form (ngSubmit)="onSubmit()" [formGroup]="SensorForm">
 <div id="madiv">
         <div class="form-group">
@@ -30,9 +38,9 @@
             <nb-option *ngFor="let o of places" [value]="o"> {{ o }}</nb-option>
           </nb-select>
         </div>
+        <div>
 
-
-        <button _ngcontent-csk-c27="" type="submit" nbbutton="" status="success" _nghost-csk-c16="" ng-reflect-status="success" class="appearance-filled size-medium status-success shape-rectangle transitions" aria-disabled="false" tabindex="0">
+        <button _ngcontent-csk-c27="" type="submit" class="appearance-filled size-medium btn btn-primary shape-rectangle transitions" nbbutton="" status="primary" _nghost-csk-c16="" ng-reflect-status="primary" aria-disabled="false" tabindex="0">
           Add
         </button>
   &nbsp;&nbsp;
@@ -40,14 +48,15 @@
     Cancel
   </button>
 </div>
-      </form>
-    </nb-card-body>
-  </nb-card>
 </div>
+      </form>
+    </nb-card-header>
+    <nb-card-body>
   <div fullWidth>
-    <img src="../assets/images/s.png" width="500px" height="500px"/>
-    <img src="../assets/images/s2.png" width="500px" height="500px"/>
-    <img src="../assets/images/s2.png" width="500px" height="500px"/>
+    <img src="../assets/images/s.png" width="50%" height="500px"/>
+    <img src="../assets/images/s2.png" width="50%" height="500px"/>
   </div>
+</nb-card-body>
+  </nb-card>
 
 

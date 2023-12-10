@@ -9,6 +9,8 @@ import {
   NbMenuModule,
   NbRadioModule,
   NbSelectModule,
+  NbDatepickerModule,
+  NbThemeModule,
 } from '@nebular/theme';
 
 import { ThemeModule } from '../@theme/theme.module';
@@ -36,13 +38,17 @@ import { ChatComponent } from './chat/chat.component';
 import { ExtraComponentsModule } from './extra-components/extra-components.module';
 import { PlaceComponent } from './factory/place/place.component';
 import { UiSwitchModule } from 'ngx-toggle-switch';
-import { TarifComponent } from './tarif/tarif.component';
+
 import { AngularDateTimePickerModule } from 'angular2-datetimepicker';
 import { FactureComponent } from './facture/facture.component';
 import { DecodersComponent } from './decoders/decoders.component';
 import { DecoderButtonComponent } from './decode-button/decode-button.component';
 import { NbIconModule } from '@nebular/theme';
-import { DeleteDataButtonComponent } from './delete-data-button/delete-data-button.component' ;
+import { DeleteDataButtonComponent } from './delete-data-button/delete-data-button.component';
+import { PredictionComponent } from './predictions/predictions.component' ;
+import { SensorService } from './services/sensor.service';
+import { LicenseComponent } from './license/license.component';
+
 
 
 @NgModule({
@@ -58,11 +64,13 @@ import { DeleteDataButtonComponent } from './delete-data-button/delete-data-butt
     NgxAlertComponent,
     ChatComponent,
     PlaceComponent,
-    TarifComponent,
+    
     DecodersComponent,
     FactureComponent,
     DecoderButtonComponent,
     DeleteDataButtonComponent,
+    PredictionComponent,
+    LicenseComponent,
   ],
   imports: [
     PagesRoutingModule,
@@ -75,6 +83,8 @@ import { DeleteDataButtonComponent } from './delete-data-button/delete-data-butt
     Ng2SmartTableModule,
     NbCardModule,
     NbInputModule,
+    NbDatepickerModule,
+    NbThemeModule,
     NbRadioModule,
     NbSelectModule,
     FormsModule,
@@ -87,10 +97,12 @@ import { DeleteDataButtonComponent } from './delete-data-button/delete-data-butt
     NbAuthModule,
     NbCardModule,
     NbChatModule,
+    NbDatepickerModule,
     ExtraComponentsModule,
     UiSwitchModule,
     AngularDateTimePickerModule,
   ],
-  entryComponents: [DeleteDataButtonComponent, DecoderButtonComponent,]
+  entryComponents: [DeleteDataButtonComponent, DecoderButtonComponent,],
+  providers: [SensorService],
 })
 export class PagesModule {}

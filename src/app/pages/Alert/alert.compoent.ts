@@ -2,7 +2,7 @@
 import {Component} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {NbComponentStatus} from '@nebular/theme';
-export declare type NbData = 'Humidity' | 'Temperature' | 'Light' | 'Energy';
+export declare type NbData = 'Humidity' | 'Temperature'| 'Status' | 'DoorContactStaus';
 const Swal = require('sweetalert2');
 @Component({
   templateUrl: './alert.component.html',
@@ -68,7 +68,7 @@ console.log("user email: "+this.email)  }
    Nemail = false ;
    Nsms = false ;
    Ntoast = true ;
-  typesData: NbData[] = ['Humidity', 'Temperature', 'Light' , 'Energy'] ;
+  typesData: NbData[] = ['Humidity', 'Temperature', 'Status', 'DoorContactStaus'] ;
   data: NbData = 'Humidity' ;
   status: NbComponentStatus = 'info';
   types: NbComponentStatus[] = [
@@ -80,17 +80,19 @@ console.log("user email: "+this.email)  }
     params: new HttpParams().append('token', localStorage.getItem('token')),
   };
   options = [];
-  ok  = this.http.post('/api/sensors/sensor/findByType', {type : ['Sensor','AN-303','AN-302','AN-305A','AN-301','AN-103A']},
+  ok  = this.http.post('/api/sensors/sensor/findByType', {type : ['Sensor','AN-302','AN-305A','AN-103A']},
     this.option).subscribe(data => {
     const resSTR = JSON.stringify(data);
     const resJSON = JSON.parse(resSTR);
-    this.options = resJSON ; }) ;
+    this.options = resJSON ; console.log('ok!!! '+this.ok)}) ;
+    
   dt = this.http.get('/api/alerts/alert/getByUser',
     this.option).subscribe(data => {
     const resSTR = JSON.stringify(data);
     const resJSON = JSON.parse(resSTR);
     this.dt = resJSON ; 
   console.log('dt!!! '+this.dt)});
+  
   onDeleteConfirm(event): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -150,12 +152,8 @@ console.log("user email: "+this.email)  }
 
        }
      }, error => {
-     });/*
-console.log("delete alert")
- this.http.post('/api/Alerts/alert/delete/', {
-             },
-      this.option).subscribe(data => {
-console.log("deleteeeeeed!ss"+data)})*/
+     });
+
 
   }
   onEditConfirm(event): void {
@@ -182,5 +180,6 @@ console.log("deleteeeeeed!ss"+data)})*/
         }
       });
   }
+  
 
 }

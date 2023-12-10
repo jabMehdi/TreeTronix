@@ -1,45 +1,55 @@
-<form ngNativeValidate ngForm="t" (ngSubmit)="submit()"><nb-card>
-  <nb-card-header>
+<style>
+  .header1 {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+  </style>
+  <form ngNativeValidate ngForm="t" (ngSubmit)="submit()">
+<nb-card>
+  <nb-card-header class="header1">
 
-      <h1 style="
-      color: #3366ff;
-      text-align: center ;
-  "> Alert configuration </h1>
+      <h3 style="
+      color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif;"> Alert configuration </h3>
   </nb-card-header>
   <nb-card-body>
 
     <div class="row">
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label class="label">Select device:</label>
+          <label class="label" style="
+          color: #ffff;">Select device:</label>
           <nb-select [(selected)]="selectedOption"  class="position-select" placeholder="device">
             <nb-option *ngFor="let p of options" [value]="p" >{{ p.name }}</nb-option>
           </nb-select>
         </div>
         <div class="form-group">
-          <label class="label">Data:</label>
+          <label class="label" style="
+          color: #ffff;">Data:</label>
           <nb-select [(selected)]="data" placeholder="data">
             <nb-option *ngFor="let t of typesData" [value]="t" >{{ t }}</nb-option>
           </nb-select>
         </div>
         <div class="form-group">
-          <label class="label">Min Value :</label>
+          <label class="label" style="
+          color: #ffff;">Min Value :</label>
           <input nbInput required="true"  type="number" [(ngModel)]="Vmin" name="content">
         </div>
         <div class="form-group">
-          <label class="label">Max Value :</label>
+          <label class="label"style="
+          color: #ffff;">Max Value :</label>
           <input nbInput  type="number" required="true" [(ngModel)]="Vmax" name="valeur max">
         </div>
-
-
-
-
-
       </div>
 
       <div class="col-md-6 col-sm-12">
         <div class="form-group">
-          <label class="label">alert type:</label>
+          <label class="label" style="
+          color: #ffff;">alert type:</label>
           <nb-select [(selected)]="status">
             <nb-option *ngFor="let t of types" [value]="t">{{ t }}</nb-option>
           </nb-select>
@@ -51,9 +61,6 @@
           name="email" placeholder="treetronix@gmail.com" -->
         </div>
         <div>
-          <nb-checkbox [(ngModel)]="Nsms" [ngModelOptions]="{standalone: true}">Notify by SMS</nb-checkbox>
-        </div>
-        <div>
           <nb-checkbox [(ngModel)]="Ntoast" [ngModelOptions]="{standalone: true}">Notify by Toast</nb-checkbox>
         </div>
       </div>
@@ -62,7 +69,7 @@
   </nb-card-body>
 
   <nb-card-footer>
-    <button nbButton status="success" type="submit">save alert</button>
+    <button nbButton status="submit" class="appearance-filled size-medium btn-primary shape-rectangle transitions" type="submit">save alert</button>
     <button nbButton status="danger" type="reset">cancel</button>
   </nb-card-footer>
 </nb-card>
@@ -71,10 +78,11 @@
 
 
 <nb-card>
-  <nb-card-header style="
-    color: #23afdc;
-    text-align: center;">
-    All alerts
+  <nb-card-header class="header1">
+    <h3 style="
+    color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif;">All alerts</h3>
   </nb-card-header>
   <nb-card-body size="100%">
     <ng2-smart-table [settings]="settings" [source]="dt" (deleteConfirm)="onDeleteConfirm($event)" (editConfirm)="onEditConfirm($event)">

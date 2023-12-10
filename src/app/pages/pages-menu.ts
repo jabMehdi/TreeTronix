@@ -4,11 +4,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: "SMART INDUSTRY",
     icon: "home-outline",
-    link: "/pages/iot-dashboard"
+    link: "/pages/dashboard"
   },
   {
     title: "Factories",
-    icon: "keypad-outline",
+    icon: "grid-outline",
     children: [
       {
         title: "Add Factory",
@@ -26,7 +26,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: "Devices",
-    icon: "grid-outline",
+    icon: "keypad-outline",
     children: [
       {
         title: "Add Device",
@@ -43,7 +43,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: "map-outline",
     link: "/pages/mapbox"
   },
-
+  {
+    title: "Prediction",
+    icon: "edit-2-outline",
+    link: "/pages/Prediction"
+    // link: '/pages/stat',
+  },
   {
     title: "History",
     icon: "pie-chart-outline",
@@ -55,21 +60,19 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: "layout-outline",
     link: "/pages/alert"
   },
-   {
-    title: "Price",
-    icon: "layout-outline",
-    link: "/pages/price"
-  }, 
+   
   {
     title: "Reclamation",
     icon: "edit-2-outline",
     link: "/pages/reclamation"
   },
-  /* {
-      title: 'chat bot',
-      icon: 'keypad-outline',
-      link: '/pages/chat',
-    }, */
+
+  {
+    title: "License",
+    icon: "edit-2-outline",
+    link: "/pages/license"
+  },
+
   {
     title: "Account",
     icon: "lock-outline",

@@ -85,28 +85,7 @@ getDeviceData() {
   this.http.post('/api/sensors/sensor/findByUser', {}, this.options).subscribe((data: any) => {
     this.data1 = data; // Set the retrieved data to the 'deviceData' variable
 
-    // Loop through each sensor and retrieve data for it
-    this.data1.forEach((sensor: Sensor) => {
-      const sensorCode = sensor.code;
-      this.getSensorData(sensorCode);
-    });
   });
-}
-
-getSensorData(sensorCode: string): void {
-  if (sensorCode) {
-    this.http.post<any[]>('/api/sensors/sensor/findByCode', { code: sensorCode })
-      .subscribe(
-        (data: any[]) => {
-          // Handle the data for this sensor
-          console.log(`Data for sensor ${sensorCode}:`, data);
-          // You can process and store the data as needed here
-        },
-        (error: any) => {
-          console.error(error);
-        }
-      );
-  }
 }
 
 

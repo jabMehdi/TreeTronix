@@ -3,7 +3,7 @@
   #madiv2 { position: center; }
   
   .col-9 {
-    width: 60%;
+    width: 100%;
     margin: auto;
   }
 
@@ -173,11 +173,23 @@
               <thead>
                 <tr>
                   <th>Sensor Type</th>
-                  </tr>
+                  <th (click)="sortColumn('ComActiveTotal')" [class]="'clickable' + (sortedColumn === 'ComActiveTotal' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Total Active Consumption </th>
+                  <th (click)="sortColumn('ComActiveTariff4')" [class]="'clickable' + (sortedColumn === 'ComActiveTariff4' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Active Consumption 4</th>
+                  <th (click)="sortColumn('ComActiveTariff3')" [class]="'clickable' + (sortedColumn === 'ComActiveTariff3' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Active Consumption 3</th>
+                  <th (click)="sortColumn('ComActiveTariff2')" [class]="'clickable' + (sortedColumn === 'ComActiveTariff2' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Active Consumption 2</th>
+                  <th (click)="sortColumn('ComActiveTariff1')" [class]="'clickable' + (sortedColumn === 'ComActiveTariff1' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Active Consumption 1</th>
+                  <th (click)="sortColumn('time')" [class]="'clickable' + (sortedColumn === 'time' ? (isSortReversed ? ' sort-desc' : ' sort-asc') : '')">Time</th>
+                </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>{{sensor.type}}</td>
+                  <td>{{sensor.ComActiveTotal }} </td>
+                  <td>{{sensor.ComActiveTariff4 }}</td>
+                  <td>{{sensor.ComActiveTariff3 }}</td>
+                  <td>{{sensor.ComActiveTariff2 }} </td>
+                  <td>{{sensor.ComActiveTariff1 }} </td>
+                  <td>{{ sensor.time | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -351,12 +363,10 @@
               </tbody>
             </table>
           </div>
-          
 
           <div *ngSwitchDefault>
             <h2>Unsupported Sensor Type</h2>
             <p>This sensor type is not supported.</p>
-            <p>Received sensor type: {{ sensor.type }}</p>
           </div>
         </ng-container>
       </ng-container>

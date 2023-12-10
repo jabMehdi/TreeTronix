@@ -5,17 +5,18 @@ import {AuthGuard} from './pages/auth.guard';
 
 
 
+
 const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () => import('../app/pages/auth/auth.module')
-      .then(m => m.NgxAuthModule),
+      .then(m => m.NgxAuthModule), 
   },
   {
     path: 'pages',
     loadChildren: () => import('../app/pages/pages.module')
-      .then(m => m.PagesModule), canActivate : [AuthGuard] ,
+      .then(m => m.PagesModule), canActivate : [AuthGuard],
   },
   { path: '**', redirectTo: 'auth/login'},
 ];

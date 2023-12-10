@@ -17,17 +17,21 @@ import {HistoryComponent} from './history/history.component';
 import {NgxAlertComponent} from './Alert/alert.compoent';
 import {ChatComponent} from './chat/chat.component';
 import {PlaceComponent} from './factory/place/place.component';
-import { TarifComponent } from './tarif/tarif.component';
+
 import {FactureComponent} from './facture/facture.component'
 import { DecodersComponent } from './decoders/decoders.component';
+import { PredictionComponent } from './predictions/predictions.component';
+import { LicenseComponent } from './license/license.component';
+import { LicenseResolver } from './license-guard/license.resolver';
 
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
+  
   children: [
     {
       path: 'dashboard',
-      component: ECommerceComponent,
+      component: ECommerceComponent, 
     },
     {
       path: 'iot-dashboard',
@@ -35,9 +39,14 @@ const routes: Routes = [{
     },    {
       path: 'place',
       component: PlaceComponent,
+      resolve: { license: LicenseResolver },
+    },
+    {
+      path: 'license',
+      component: LicenseComponent,
     },
     
-    { path: 'decoders/:code/:sensorId', component: DecodersComponent },
+    { path: 'decoders/:code/:sensorId', component: DecodersComponent,resolve: { license: LicenseResolver }, },
 
     {
       path: 'layout',
@@ -47,22 +56,22 @@ const routes: Routes = [{
     {
       path: 's-devices',
       component: SDevicesComponent,
+      resolve: { license: LicenseResolver },
+      
     },
-
     {
-      path: 'price',
-      component: TarifComponent,
-    },  {
+      path: 'Prediction',
+      component: PredictionComponent,
+      resolve: { license: LicenseResolver },
+      
+     }, {
       path: 'chat',
       component: ChatComponent,
     },
     {
-      path: 'Price',
-      component: TarifComponent,
-    },
-    {
       path: 'addsensor',
       component: AddsensorComponent,
+
     },
     {
       path: 'stat',
@@ -71,25 +80,29 @@ const routes: Routes = [{
     {
       path: 'mapbox',
       component: MapboxComponent,
+      resolve: { license: LicenseResolver },
     },
     {
       path: 'addfactory',
       component: AddfactoryComponent,
+      
     },
     {
       path: 'allfactory',
       component: AllfactoryComponent,
+      resolve: { license: LicenseResolver },
     },
     {
       path: 'reclamation',
-      component: ReclamationComponent,
+      component: ReclamationComponent,  
     },
     {
       path: 'alert',
-      component: NgxAlertComponent  },
+      component: NgxAlertComponent,
+      resolve: { license: LicenseResolver }, },
       {
         path: 'facture',
-        component: FactureComponent  },
+        component: FactureComponent },
     {
       path: 'forms',
       loadChildren: () => import('./forms/forms.module')
@@ -115,6 +128,7 @@ const routes: Routes = [{
       path: 'charts',
       loadChildren: () => import('./charts/charts.module')
         .then(m => m.ChartsModule),
+        resolve: { license: LicenseResolver },
     },
     {
       path: 'editors',

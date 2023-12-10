@@ -1,10 +1,27 @@
+<style>
+.header1 {
+  background-color: #6f42c1;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+}
+</style>
 <nb-card>
+  <nb-card-header class="header1">
+    <h4 style="
+    color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif; "> History Chart</h4>
+  </nb-card-header>
   <nb-card-header>
     <div class="form-group">
       <div class="row" style="margin-bottom: 40px;">
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Arial', cursive"> Select factory : <nb-select [(selected)]="selectedFactory" placeholder="Factory">
+          color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif; "> Select factory : <nb-select [(selected)]="selectedFactory" placeholder="Factory">
               <nb-option (click)="selectZone()" *ngFor="let o of factoryData" [value]="o"> {{ o.name }}</nb-option>
             </nb-select>
 
@@ -12,7 +29,9 @@
         </div>
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Arial', cursive"> Select Zone : <nb-select [(selected)]="selectedZone" placeholder="Zone">
+          color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif;"> Select Zone :  <nb-select [(selected)]="selectedZone" placeholder="Zone">
               <nb-option (click)="selectDevice()" *ngFor="let o of places" [value]="o"> {{ o }}</nb-option>
             </nb-select>
 
@@ -21,7 +40,9 @@
 
         <div class="col-sm-4">
           <h4 style="
-          color: #d54d7b;font-family: 'Arial', cursive"> Select Device : <nb-select [(selected)]="selectedDevice" placeholder="Devices">
+          color: #ffff;
+font-size: 24px;
+font-family: Open Sans, sans-serif;"> Select Device :  <nb-select [(selected)]="selectedDevice" placeholder="Devices">
               <nb-option (click)="send()" *ngFor="let o of devices" [value]="o"> {{ o.name }}</nb-option>
             </nb-select>
            
@@ -32,7 +53,9 @@
       </div>
       <div class="row">
         <div class="col-sm-4">
-          <h4 style="color: #d54d7b; font-family: 'Arial', cursive">Select Chart:
+          <h4 style="color: #ffff;
+          font-size: 24px;
+          font-family: Open Sans, sans-serif;">Select Chart : 
           <nb-select [(selected)]="selectedChart" placeholder="Chart Type">
             <nb-option (click)="showChart('Radar')" value="Radar">Radar Chart</nb-option>
             <nb-option (click)="showChart('axis')" value="axis">Axis Chart</nb-option>

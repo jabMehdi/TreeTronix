@@ -2,16 +2,17 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import {
   NbMediaBreakpointsService,
   NbMenuService,
-  NbSearchService,
   NbSidebarService,
   NbThemeService
 } from "@nebular/theme";
-import * as mapboxgl from "mapbox-gl";
 import { UserData } from "../../../@core/data/users";
 import { LayoutService } from "../../../@core/utils";
 import { map, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { User } from "../../../pages/auth/model/User";
+import { Alert } from "../../../pages/model/alert";
+import { HttpParams, HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "ngx-header",
@@ -22,6 +23,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
+  data: Array<Alert>;
+  numberOfAlerts: number;
   public app_username: any;
 
   themes = [
@@ -41,14 +44,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = "cosmic";
 
-  /* userMenu = [ { title: 'Logout' ,
-                  link: '../../../auth/login',
-             },
-             ];*/
   userMenu = [];
   value = "";
   test = "";
+
+ 
   constructor(
+    private http: HttpClient,
+    private router: Router,
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
@@ -70,7 +73,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
     this.test = this.app_username.username;
   }
-
+  options = {
+    params: new HttpParams().append('token', localStorage.getItem('token')),
+  };
   ngOnInit() {
     this.currentTheme = this.themeService.currentTheme;
 
@@ -97,6 +102,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(themeName => (this.currentTheme = themeName));
+
+      this.http.post('http://localhost:4200/api/alerts/alert/nbA', {}, this.options).subscribe((data: any) => {
+        this.numberOfAlerts = data.count;
+      });
   }
 
   ngOnDestroy() {
@@ -118,5 +127,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+  navigateToDecoder(): void {
+    this.router.navigate(['pages/alert']);
   }
 }

@@ -19,8 +19,6 @@ export class MapboxComponent implements OnInit {
     params: new HttpParams().append('token', localStorage.getItem('token')),
   };
   MapboxLanguage = require('@mapbox/mapbox-gl-language');
-  private Latiude: number;
-  private Longitude: number;
   factoryUrl = '/api/factories/factory/all';
   constructor(private http: HttpClient) { }
   private data:  Array<any> ;

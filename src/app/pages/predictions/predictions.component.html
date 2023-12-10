@@ -1,0 +1,81 @@
+<style>
+  .header1 {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+  </style>
+  <nb-card>
+      <nb-card-header class="header1">
+        <h4 style="
+        color: #ffff;
+    font-size: 24px;
+    font-family: Open Sans, sans-serif; "> Predictions</h4>
+      </nb-card-header>
+      <nb-card-header>
+    
+  <form [formGroup]="sensorForm" (ngSubmit)="onSubmit()"> 
+    <div>
+      <label for="sensorType" class="label" style="
+      color: #ffff;">Select Sensor Type:</label>
+      </div>
+      <div>
+      <nb-select formControlName="sensorType">
+        <nb-option *ngFor="let type of sensorTypes" [value]="type">{{ type }}</nb-option>
+      </nb-select>
+    </div>
+  
+    <div *ngIf="sensorForm.get('sensorType').value">
+      <div>
+      <label for="field" class="label" style="
+      color: #ffff;">Select Field:</label>
+      </div>
+      <div>
+      <nb-select formControlName="field">
+        <nb-option *ngFor="let field of fieldOptions[sensorForm.get('sensorType').value]" [value]="field">{{ field }}</nb-option>
+      </nb-select>
+    </div>
+    </div>
+  
+    <button type="submit" [disabled]="sensorForm.invalid" class="btn btn-primary btn-profile">Submit</button>
+  </form>
+  </nb-card-header>
+<nb-card-header>
+  <!-- Add a new form for prediction -->
+  <form [formGroup]="predictionForm" *ngIf="showPredictionForm" (ngSubmit)="onPredict()">
+    <div class="label-container">
+      <label for="predictionDateTime" class="label" style="
+      color: #ffff;">Select Prediction Date and Time:</label>
+      </div>
+      <div>
+      <input type="datetime-local" formControlName="predictionDateTime" />
+      
+    </div>
+
+    <button type="submit" [disabled]="predictionForm.invalid" class="btn btn-primary btn-profile">Predict</button>
+  </form>
+  <div *ngIf="predictedValue !== null">
+    <label class="label" style="
+    color: #ffff;">Predicted Value :</label>
+    <p>{{ predictedValue }}</p>
+  </div>
+</nb-card-header>
+<nb-card-body>
+  <div>
+    <h2 style="
+    color: #ffff;
+font-size: 28px;
+font-family: Open Sans, sans-serif; ">Predictions Chart</h2>
+    <canvas #chart></canvas>
+  </div>
+
+  <ng-template #loading>
+    <p>Loading predictions. Please wait...</p>
+  </ng-template>
+
+</nb-card-body>
+
+
+

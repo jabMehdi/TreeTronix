@@ -1,0 +1,56 @@
+<style>
+  .header1 {
+    background-color: #6f42c1;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+  }
+</style>
+<div class="col-lg-12">
+  <nb-card>
+    <nb-card-header>
+      <h1 style="color: #fff; font-size: 24px; font-family: Open Sans, sans-serif;">License Request Form</h1>
+    </nb-card-header>
+    <nb-card-body>
+      <form (ngSubmit)="onRequest()" ngNativeValidate [formGroup]="licenseForm">
+        <div class="form-group">
+          <!-- Use nb-select for factory selection -->
+          <nb-select [(selected)]="licenseForm.get('selectedFactory').value" placeholder="Select Your Factory" formControlName="selectedFactory" fullWidth>
+            <nb-option *ngFor="let factory of factories" [value]="factory">{{ factory.name }}</nb-option>
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label style="color: #ffff;">Select Date and Time:</label>
+        </div>
+        <div class="form-group">
+          <input type="datetime-local" formControlName="selectedDate" />
+        </div>
+        <button type="submit" nbButton status="primary">Submit</button>
+      </form>
+    </nb-card-body>
+  </nb-card>
+  <nb-card>
+    <nb-card-header class="header1">
+      <h1 style=" color: #ffff; font-size: 24px;
+        font-family: Open Sans, sans-serif;" >Licenses</h1>
+    </nb-card-header>
+
+    <nb-card-body>
+   
+      <div [formGroup]="licenseForm">
+  <ng2-smart-table [settings]="settings" [source]="Resp" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+  
+  <div>
+    <label style="color: #ffff; margin-top: 5px;">Enter License Key:</label>
+  </div>
+
+  <div class="form-group">
+    <input type="text" nbInput formControlName="activationKey" />
+  </div>
+
+  <button nbButton status="primary" (click)="onActivate()">Activate</button>
+</div>
+    </nb-card-body>
+  </nb-card>
+</div>
