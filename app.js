@@ -44,6 +44,7 @@ const zoneRoutes = require("./routes/ZoneRoute");
 const reclamationRoutes = require("./routes/ReclamationRoute");
 const alertRoutes = require("./routes/AlertRoute");
 const profileRoutes = require("./routes/ProfileRoute");
+const LicenseRoutes = require("./routes/LicenseRoute");
 
 app.use("/api/users", userRoutes);
 app.use("/api/alerts", alertRoutes);
@@ -53,6 +54,7 @@ app.use("/api/Reclamations", reclamationRoutes);
 app.use("/api/users", profileRoutes);
 app.use("/api/DownLink", downLink);
 app.use("/api/zone", zoneRoutes);
+app.use("/api/license", LicenseRoutes);
 
 app.post("/", (req, res) => {
   res.send("we are home");

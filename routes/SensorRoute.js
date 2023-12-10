@@ -1248,7 +1248,7 @@ router.post("/sensor/data/:code/:sensorId", async (req, res) => {
       return res.status(404).json({ message: "Sensor not found" });
     }
     const sensorData = sensor.data;
-    const sensorCounter = sensor.Countersdata;
+    const sensorCounter = sensor.ConsomationTripahse;
 
     if (sensorCode != "004A77012404D2C0") {
       res.json(sensorData);

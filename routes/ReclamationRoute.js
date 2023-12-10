@@ -83,7 +83,6 @@ router.get("/all", verifyToken, async (req, res) => {
 });
 
 router.delete("/Reclamation/delete/:id", (req, res) => {
-  console.log("ana houné");
   console.log(req.body);
   Reclamation.findByIdAndRemove(req.params.id).then((reclamation) => {
     if (!reclamation) {
